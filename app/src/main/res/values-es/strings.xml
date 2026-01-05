@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Nombre de la App -->
+    <string name="app_name">SIGINT Radar</string>
+
+    <!-- Pantalla Principal -->
+    <string name="logo_description">Logo de SIGINT Radar</string>
+    <string name="app_title">SIGINT RADAR</string>
+    <string name="devices">DISPOSITIVOS</string>
+    <string name="risk_levels">NIVELES DE RIESGO</string>
+    <string name="zero">0</string>
+    <string name="crit">CRÍT</string>
+    <string name="high_short">ALTO</string>
+    <string name="med">MED</string>
+    <string name="low_short">BAJO</string>
+    <string name="wifi_count">WiFi: %d</string>
+    <string name="ble_count">BLE: %d</string>
+
+    <!-- Botones -->
+    <string name="start_scan">Iniciar</string>
+    <string name="stop_scan">Detener</string>
+    <string name="scan_description">Iniciar o detener escaneo</string>
+    <string name="help_button">Ayuda</string>
+    <string name="help_description">Ayuda</string>
+    <string name="debug_mode">Modo debug</string>
+    <string name="filters">Filtros</string>
+    <string name="filters_description">Filtros</string>
+    <string name="close_button">CERRAR</string>
+    <string name="understood">Entendido</string>
+    <string name="apply">Aplicar</string>
+    <string name="cancel">Cancelar</string>
+
+    <!-- Iconos -->
+    <string name="help_icon">\?</string>
+    <string name="settings_icon">⚙</string>
+    <string name="debug_icon">🐛</string>
+
+    <!-- Niveles de Riesgo -->
+    <string name="risk_critical">CRÍTICO</string>
+    <string name="risk_high">ALTO</string>
+    <string name="risk_medium">MEDIO</string>
+    <string name="risk_low">BAJO</string>
+
+    <!-- Diálogo de Detalles del Dispositivo -->
+    <string name="device_name">Nombre del Dispositivo</string>
+    <string name="mac_address_placeholder">AA:BB:CC:DD:EE:FF</string>
+    <string name="risk_score">PUNTUACIÓN DE RIESGO</string>
+    <string name="score_placeholder">85</string>
+    <string name="score_out_of_100">/100</string>
+    <string name="device_information">INFORMACIÓN DEL DISPOSITIVO</string>
+    <string name="type">Tipo</string>
+    <string name="type_wifi">WiFi</string>
+    <string name="type_bluetooth">Bluetooth</string>
+    <string name="type_beacon">Baliza</string>
+    <string name="manufacturer">Fabricante</string>
+    <string name="manufacturer_placeholder">Apple Inc.</string>
+    <string name="signal_rssi">Señal (RSSI)</string>
+    <string name="rssi_placeholder">-45 dBm</string>
+    <string name="distance">Distancia</string>
+    <string name="distance_placeholder">5,2 m</string>
+    <string name="technical_details">DETALLES TÉCNICOS</string>
+    <string name="technical_placeholder">Canal: 6 | Frecuencia: 2437 MHz\nCalidad de señal: 85%</string>
+    <string name="risk_factors">FACTORES DE RIESGO</string>
+    <string name="risk_factors_placeholder">• Baliza de rastreo detectada\n• Presencia frecuente\n• Fabricante desconocido</string>
+
+    <!-- Diálogo de Filtros -->
+    <string name="filter_title">Filtros</string>
+    <string name="device_type">Tipo de Dispositivo</string>
+    <string name="show_wifi">Mostrar WiFi</string>
+    <string name="show_bluetooth">Mostrar Bluetooth</string>
+    <string name="risk_level">Nivel de Riesgo</string>
+    <string name="critical">Crítico</string>
+    <string name="high">Alto</string>
+    <string name="medium">Medio</string>
+    <string name="low">Bajo</string>
+    <string name="showing_all_devices">Mostrando todos los dispositivos</string>
+    <string name="hiding_filters">Ocultando: %s</string>
+
+    <!-- Sistema de Ayuda -->
+    <string name="help_title">SIGINT Radar - Ayuda</string>
+    <string name="help_content">
+        <![CDATA[
+        <b>¿Qué es SIGINT Radar?</b><br/>
+        Aplicación para detectar dispositivos WiFi y Bluetooth cercanos y evaluar posibles riesgos de privacidad.<br/><br/>
+
+        <b>Niveles de Riesgo:</b><br/>
+        🔴 <font color="#FF1744">CRÍTICO</font>: Dispositivo de alto riesgo detectado<br/>
+        🟠 <font color="#FF5252">ALTO</font>: Riesgo considerable<br/>
+        🟡 <font color="#FFB300">MEDIO</font>: Riesgo moderado<br/>
+        🟢 <font color="#00E676">BAJO</font>: Riesgo bajo o normal<br/><br/>
+
+        <b>Cómo usar:</b><br/>
+        1. Pulsa "Iniciar Escaneo" para comenzar<br/>
+        2. La vista de radar mostrará dispositivos cercanos<br/>
+        3. La lista inferior muestra detalles de cada dispositivo<br/>
+        4. Toca cualquier dispositivo para ver información completa<br/><br/>
+
+        <b>Botones:</b><br/>
+        • <font color="#00E676">Verde</font>: Iniciar/Detener escaneo<br/>
+        • <font color="#2979FF">?</font>: Ayuda (este diálogo)<br/>
+        • 🐛: Modo debug (datos simulados)<br/>
+        • ⚙: Filtros de búsqueda<br/><br/>
+
+        <b>Privacidad:</b><br/>
+        Esta aplicación requiere permisos de ubicación y Bluetooth para funcionar. No se envía información a servidores externos.
+        ]]>
+    </string>
+
+    <!-- Permisos y Mensajes -->
+    <string name="permission_required">Permiso de ubicación necesario para escanear WiFi</string>
+    <string name="scanning">Escaneando dispositivos cercanos…</string>
+    <string name="devices_detected">Dispositivos Detectados</string>
+    <string name="debug_mode_enabled">Modo DEBUG activado - Datos simulados</string>
+    <string name="real_mode_enabled">Modo REAL activado</string>
+    <string name="filters_applied">Filtros aplicados</string>
+
+    <!-- Diálogo de Guardar Resultados -->
+    <string name="save_scan_results">¿Guardar Resultados del Escaneo?</string>
+    <string name="save_results_message">¿Deseas guardar los resultados del escaneo antes de borrarlos?\n\nDispositivos encontrados: %d</string>
+    <string name="save">Guardar</string>
+    <string name="discard">Descartar</string>
+    <string name="results_saved">Resultados guardados correctamente</string>
+    <string name="results_discarded">Resultados descartados</string>
+    <string name="save_error">Error al guardar resultados</string>
+
+    <!-- Strings de Detalles Técnicos -->
+    <string name="channel">Canal</string>
+    <string name="frequency">Frecuencia</string>
+    <string name="width">Ancho</string>
+    <string name="signal_quality">Calidad de señal</string>
+    <string name="tx_power">Potencia Tx</string>
+    <string name="services">Servicios</string>
+    <string name="dbm">dBm</string>
+    <string name="mhz">MHz</string>
+    <string name="meters">m</string>
+
+    <!-- Factores de Riesgo -->
+    <string name="risk_hidden_network">Red oculta</string>
+    <string name="risk_tracking_device">Dispositivo de rastreo detectado</string>
+    <string name="risk_unknown_manufacturer">Fabricante desconocido</string>
+    <string name="risk_high_power">Alta potencia de transmisión</string>
+    <string name="risk_suspicious_ssid">Nombre de red sospechoso</string>
+    <string name="risk_frequent_presence">Presencia frecuente</string>
+    <string name="risk_beacon_detected">Baliza de rastreo detectada</string>
+    <string name="risk_close_proximity">Proximidad muy cercana</string>
+    <string name="downloads_folder">Descargas</string>
+</resources>
+

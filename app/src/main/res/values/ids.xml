@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="filterMedium" type="id" />
+    <item name="filterHigh" type="id" />
+    <item name="filterCritical" type="id" />
+    <item name="filterWifi" type="id" />
+    <item name="filterBluetooth" type="id" />
+    <item name="filterLow" type="id" />
+</resources>

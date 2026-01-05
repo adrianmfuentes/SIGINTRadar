@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#1A1E2E">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/device_type"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <CheckBox
+        android:id="@+id/filterWifi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/show_wifi"
+        android:textColor="#FFFFFF"
+        android:checked="true"/>
+
+    <CheckBox
+        android:id="@+id/filterBluetooth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/show_bluetooth"
+        android:textColor="#FFFFFF"
+        android:checked="true"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#B0B8C8"
+        android:layout_marginVertical="12dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/risk_level"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <CheckBox
+        android:id="@+id/filterCritical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/critical"
+        android:textColor="#FF1744"
+        android:checked="true"/>
+
+    <CheckBox
+        android:id="@+id/filterHigh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/high"
+        android:textColor="#FF5252"
+        android:checked="true"/>
+
+    <CheckBox
+        android:id="@+id/filterMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/medium"
+        android:textColor="#FFB300"
+        android:checked="true"/>
+
+    <CheckBox
+        android:id="@+id/filterLow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/low"
+        android:textColor="#00E676"
+        android:checked="true"/>
+
+</LinearLayout>

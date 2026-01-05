@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="#15192A"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="12dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="600dp"
+        android:scrollbars="vertical"
+        android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Header with device name and risk -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/detailDeviceNameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/device_name"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:maxLines="2"
+                    android:ellipsize="end"/>
+
+                <TextView
+                    android:id="@+id/detailDeviceAddressText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/mac_address_placeholder"
+                    android:textColor="#B0B8C8"
+                    android:textSize="12sp"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="2dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/detailRiskBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/risk_critical"
+                android:textColor="#0A0E1A"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:background="@drawable/risk_badge"/>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#00FF4130"
+            android:layout_marginVertical="12dp"/>
+
+        <!-- Risk Score -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/risk_score"
+            android:textColor="#B0B8C8"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:letterSpacing="0.1"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+
+            <TextView
+                android:id="@+id/detailRiskScoreText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/score_placeholder"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:textColor="#FF0032"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/score_out_of_100"
+                android:textSize="16sp"
+                android:fontFamily="monospace"
+                android:textColor="#00FF4180"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="6dp"
+                android:layout_gravity="bottom"/>
+
+            <!-- Progress bar -->
+            <ProgressBar
+                android:id="@+id/detailRiskProgressBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="8dp"
+                android:layout_marginStart="16dp"
+                android:max="100"
+                android:progress="85"
+                android:progressTint="#FF0032"
+                android:progressBackgroundTint="#1A1E2E"/>
+        </LinearLayout>
+
+        <!-- Device Info Grid -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/device_information"
+                android:textColor="#B0B8C8"
+                android:textSize="11sp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.1"
+                android:textStyle="bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false">
+
+                <!-- Left column -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/type"
+                        android:textColor="#90A0B0"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        tools:ignore="SmallSp" />
+
+                    <TextView
+                        android:id="@+id/detailDeviceTypeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/type_wifi"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="2dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/manufacturer"
+                        android:textColor="#90A0B0"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="8dp"
+                        tools:ignore="SmallSp" />
+
+                    <TextView
+                        android:id="@+id/detailManufacturerText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/manufacturer_placeholder"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+
+                <!-- Right column -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/signal_rssi"
+                        android:textColor="#90A0B0"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        tools:ignore="SmallSp" />
+
+                    <TextView
+                        android:id="@+id/detailRssiText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/rssi_placeholder"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="2dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/distance"
+                        android:textColor="#90A0B0"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="8dp"
+                        tools:ignore="SmallSp" />
+
+                    <TextView
+                        android:id="@+id/detailDistanceText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/distance_placeholder"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Technical Details -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/technical_details"
+                android:textColor="#B0B8C8"
+                android:textSize="11sp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.1"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/detailTechnicalText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/technical_placeholder"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:fontFamily="monospace"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="2dp"/>
+        </LinearLayout>
+
+        <!-- Risk Factors -->
+        <LinearLayout
+            android:id="@+id/detailRiskFactorsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/risk_factors"
+                android:textColor="#B0B8C8"
+                android:textSize="11sp"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.1"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/detailRiskFactorsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/risk_factors_placeholder"
+                android:textColor="#FF5252"
+                android:textSize="13sp"
+                android:fontFamily="monospace"
+                android:layout_marginTop="6dp"
+                android:lineSpacingExtra="2dp"/>
+        </LinearLayout>
+
+        <!-- Close button -->
+        <Button
+            android:id="@+id/detailCloseButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/close_button"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:backgroundTint="#00FF41"
+            android:fontFamily="monospace"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+    </ScrollView>
+</androidx.cardview.widget.CardView>
+

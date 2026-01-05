@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+
+    <!-- Background -->
+    <path
+        android:pathData="M0,0h48v48h-48z"
+        android:fillColor="#0A0E1A"/>
+
+    <!-- Outer radar circle -->
+    <path
+        android:strokeWidth="2"
+        android:pathData="M42,24 A18,18 0 1,1 41.999,24"
+        android:strokeColor="#00FF41"
+        android:fillColor="#00000000"/>
+
+    <!-- Middle radar circle -->
+    <path
+        android:strokeWidth="1.5"
+        android:pathData="M36,24 A12,12 0 1,1 35.999,24"
+        android:strokeColor="#00FF41"
+        android:strokeAlpha="0.6"
+        android:fillColor="#00000000"/>
+
+    <!-- Inner radar circle -->
+    <path
+        android:strokeWidth="1"
+        android:pathData="M30,24 A6,6 0 1,1 29.999,24"
+        android:strokeColor="#00FF41"
+        android:strokeAlpha="0.4"
+        android:fillColor="#00000000"/>
+
+    <!-- Center dot -->
+    <path
+        android:pathData="M24,24 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"
+        android:fillColor="#00FF41"/>
+
+    <!-- Radar scan line -->
+    <path
+        android:strokeWidth="2"
+        android:pathData="M24,24 L24,6"
+        android:strokeColor="#00FF41"
+        android:strokeAlpha="0.8"/>
+
+    <!-- Scan line glow -->
+    <path
+        android:strokeWidth="4"
+        android:pathData="M24,24 L24,6"
+        android:strokeColor="#00FF41"
+        android:strokeAlpha="0.2"/>
+
+    <!-- Blip 1 (CRITICAL) -->
+    <path
+        android:pathData="M32,16 m-2.5,0 a2.5,2.5 0 1,0 5,0 a2.5,2.5 0 1,0 -5,0"
+        android:fillColor="#FF0032"/>
+
+    <!-- Blip 1 glow -->
+    <path
+        android:pathData="M32,16 m-3.5,0 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0"
+        android:fillColor="#FF0032"
+        android:fillAlpha="0.3"/>
+
+    <!-- Blip 2 (MEDIUM) -->
+    <path
+        android:pathData="M16,28 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"
+        android:fillColor="#FFAA00"/>
+
+    <!-- Blip 3 (LOW) -->
+    <path
+        android:pathData="M28,34 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0"
+        android:fillColor="#00FF41"/>
+
+    <!-- Cardinal cross lines -->
+    <path
+        android:strokeWidth="0.5"
+        android:pathData="M24,6 L24,42 M6,24 L42,24"
+        android:strokeColor="#00FF41"
+        android:strokeAlpha="0.2"/>
+</vector>
+

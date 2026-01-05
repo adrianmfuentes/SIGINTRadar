@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">SIGINT Radar</string>
+
+    <!-- Main Screen -->
+    <string name="logo_description">SIGINT Radar Logo</string>
+    <string name="app_title">SIGINT RADAR</string>
+    <string name="devices">DEVICES</string>
+    <string name="risk_levels">RISK LEVELS</string>
+    <string name="zero">0</string>
+    <string name="crit">CRIT</string>
+    <string name="high_short">HIGH</string>
+    <string name="med">MED</string>
+    <string name="low_short">LOW</string>
+    <string name="wifi_count">WiFi: %d</string>
+    <string name="ble_count">BLE: %d</string>
+
+    <!-- Buttons -->
+    <string name="start_scan">Start Scan</string>
+    <string name="stop_scan">Stop Scan</string>
+    <string name="scan_description">Start or stop scanning</string>
+    <string name="help_button">Help</string>
+    <string name="help_description">Help</string>
+    <string name="debug_mode">Debug mode</string>
+    <string name="filters">Filters</string>
+    <string name="filters_description">Filters</string>
+    <string name="close_button">CLOSE</string>
+    <string name="understood">Understood</string>
+    <string name="apply">Apply</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Icons -->
+    <string name="help_icon">\?</string>
+    <string name="settings_icon">⚙</string>
+    <string name="debug_icon">🐛</string>
+
+    <!-- Risk Levels -->
+    <string name="risk_critical">CRITICAL</string>
+    <string name="risk_high">HIGH</string>
+    <string name="risk_medium">MEDIUM</string>
+    <string name="risk_low">LOW</string>
+
+    <!-- Device Details Dialog -->
+    <string name="device_name">Device Name</string>
+    <string name="mac_address_placeholder">AA:BB:CC:DD:EE:FF</string>
+    <string name="risk_score">RISK SCORE</string>
+    <string name="score_placeholder">85</string>
+    <string name="score_out_of_100">/100</string>
+    <string name="device_information">DEVICE INFORMATION</string>
+    <string name="type">Type</string>
+    <string name="type_wifi">WiFi</string>
+    <string name="type_bluetooth">Bluetooth</string>
+    <string name="type_beacon">Beacon</string>
+    <string name="manufacturer">Manufacturer</string>
+    <string name="manufacturer_placeholder">Apple Inc.</string>
+    <string name="signal_rssi">Signal (RSSI)</string>
+    <string name="rssi_placeholder">-45 dBm</string>
+    <string name="distance">Distance</string>
+    <string name="distance_placeholder">5.2 m</string>
+    <string name="technical_details">TECHNICAL DETAILS</string>
+    <string name="technical_placeholder">Channel: 6 | Frequency: 2437 MHz\nSignal Quality: 85%</string>
+    <string name="risk_factors">RISK FACTORS</string>
+    <string name="risk_factors_placeholder">• Tracking beacon detected\n• Frequent presence\n• Unknown manufacturer</string>
+
+    <!-- Filter Dialog -->
+    <string name="filter_title">Filters</string>
+    <string name="device_type">Device Type</string>
+    <string name="show_wifi">Show WiFi</string>
+    <string name="show_bluetooth">Show Bluetooth</string>
+    <string name="risk_level">Risk Level</string>
+    <string name="critical">Critical</string>
+    <string name="high">High</string>
+    <string name="medium">Medium</string>
+    <string name="low">Low</string>
+    <string name="showing_all_devices">Showing all devices</string>
+    <string name="hiding_filters">Hiding: %s</string>
+
+    <!-- Help System -->
+    <string name="help_title">SIGINT Radar - Help</string>
+    <string name="help_content">
+        <![CDATA[
+        <b>What is SIGINT Radar?</b><br/>
+        Application to detect nearby WiFi and Bluetooth devices and assess potential privacy risks.<br/><br/>
+
+        <b>Risk Levels:</b><br/>
+        🔴 <font color="#FF1744">CRITICAL</font>: High-risk device detected<br/>
+        🟠 <font color="#FF5252">HIGH</font>: Considerable risk<br/>
+        🟡 <font color="#FFB300">MEDIUM</font>: Moderate risk<br/>
+        🟢 <font color="#00E676">LOW</font>: Low or normal risk<br/><br/>
+
+        <b>How to use:</b><br/>
+        1. Press "Start Scan" to begin scanning<br/>
+        2. The radar view will show nearby devices<br/>
+        3. The bottom list shows details of each device<br/>
+        4. Tap any device to see complete information<br/><br/>
+
+        <b>Buttons:</b><br/>
+        • <font color="#00E676">Green</font>: Start/Stop scanning<br/>
+        • <font color="#2979FF">?</font>: Help (this dialog)<br/>
+        • 🐛: Debug mode (simulated data)<br/>
+        • ⚙: Search filters<br/><br/>
+
+        <b>Privacy:</b><br/>
+        This app requires location and Bluetooth permissions to function. No information is sent to external servers.
+        ]]>
+    </string>
+
+    <!-- Permissions and Messages -->
+    <string name="permission_required">Location permission required for WiFi scanning</string>
+    <string name="scanning">Scanning nearby devices…</string>
+    <string name="devices_detected">Devices Detected</string>
+    <string name="debug_mode_enabled">DEBUG mode activated - Simulated data</string>
+    <string name="real_mode_enabled">REAL mode activated</string>
+    <string name="filters_applied">Filters applied</string>
+
+    <!-- Save Results Dialog -->
+    <string name="save_scan_results">Save Scan Results?</string>
+    <string name="save_results_message">Do you want to save the scan results before clearing?\n\nDevices found: %d</string>
+    <string name="save">Save</string>
+    <string name="discard">Discard</string>
+    <string name="results_saved">Results saved successfully</string>
+    <string name="results_discarded">Results discarded</string>
+    <string name="save_error">Error saving results</string>
+
+    <!-- Technical Details Strings -->
+    <string name="channel">Channel</string>
+    <string name="frequency">Frequency</string>
+    <string name="width">Width</string>
+    <string name="signal_quality">Signal Quality</string>
+    <string name="tx_power">Tx Power</string>
+    <string name="services">Services</string>
+    <string name="dbm">dBm</string>
+    <string name="mhz">MHz</string>
+    <string name="meters">m</string>
+
+    <!-- Risk Factors -->
+    <string name="risk_hidden_network">Hidden network</string>
+    <string name="risk_tracking_device">Tracking device detected</string>
+    <string name="risk_unknown_manufacturer">Unknown manufacturer</string>
+    <string name="risk_high_power">High transmission power</string>
+    <string name="risk_suspicious_ssid">Suspicious network name</string>
+    <string name="risk_frequent_presence">Frequent presence</string>
+    <string name="risk_beacon_detected">Tracking beacon detected</string>
+    <string name="risk_close_proximity">Very close proximity</string>
+    <string name="downloads_folder">Downloads</string>
+</resources>
+

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A0E1A"
+    tools:context=".MainActivity">
+
+    <!-- Header con estadísticas -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="#15192A"
+        app:layout_constraintTop_toTopOf="parent">
+        
+        <!-- Logo and title -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/logo_sigint_radar"
+                android:contentDescription="SIGINT Radar Logo"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SIGINT RADAR"
+                android:textColor="#00FF41"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:letterSpacing="0.1"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+        <!-- Estadísticas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+            
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:background="#1A1E2E">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DEVICES"
+                    android:textColor="#00FF4180"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"/>
+                
+                <TextView
+                    android:id="@+id/totalDevicesText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#00FF41"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"/>
+            </LinearLayout>
+            
+            <View
+                android:layout_width="8dp"
+                android:layout_height="0dp"/>
+            
+            <!-- Risk breakdown -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:background="#1A1E2E">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="RISK LEVELS"
+                    android:textColor="#00FF4180"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"/>
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="4dp">
+                    
+                    <TextView
+                        android:id="@+id/criticalCountText"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#FF0032"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                    
+                    <TextView
+                        android:id="@+id/highCountText"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#FF3264"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                    
+                    <TextView
+                        android:id="@+id/mediumCountText"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#FFAA00"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                    
+                    <TextView
+                        android:id="@+id/lowCountText"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#00FF41"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+                </LinearLayout>
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="CRIT"
+                        android:textColor="#FF0032"
+                        android:textSize="8sp"
+                        android:gravity="center"/>
+                    
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="HIGH"
+                        android:textColor="#FF3264"
+                        android:textSize="8sp"
+                        android:gravity="center"/>
+                    
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="MED"
+                        android:textColor="#FFAA00"
+                        android:textSize="8sp"
+                        android:gravity="center"/>
+                    
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="LOW"
+                        android:textColor="#00FF41"
+                        android:textSize="8sp"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+        
+        <!-- Contadores tipo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+            
+            <TextView
+                android:id="@+id/wifiCountText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="WiFi: 0"
+                android:textColor="#00FF41"
+                android:textSize="12sp"
+                android:fontFamily="monospace"/>
+            
+            <TextView
+                android:id="@+id/bluetoothCountText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="BLE: 0"
+                android:textColor="#00FF41"
+                android:textSize="12sp"
+                android:fontFamily="monospace"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Guideline dinámica para controlar tamaño radar vs lista -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/radarGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90"/>
+
+    <!-- Radar View - Tamaño dinámico controlado por guideline -->
+    <com.sigint.radar.ui.RadarView
+        android:id="@+id/radarView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/radarGuideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Lista de dispositivos - Tamaño dinámico -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/deviceRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#0A0E1A"
+        android:paddingTop="8dp"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/radarGuideline"
+        app:layout_constraintBottom_toTopOf="@id/buttonLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Botones de control -->
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:background="#15192A"
+        app:layout_constraintBottom_toBottomOf="parent">
+        
+        <Button
+            android:id="@+id/scanButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="56dp"
+            android:text="Start Scan"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:backgroundTint="#00FF41"
+            android:textSize="16sp"
+            android:fontFamily="monospace"
+            android:contentDescription="Iniciar o detener escaneo"/>
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="0dp"/>
+
+        <Button
+            android:id="@+id/helpButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text="@string/help_icon"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:backgroundTint="#0088FF"
+            android:contentDescription="@string/help_button"/>
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="0dp"/>
+        
+        <Button
+            android:id="@+id/btnDebugMode"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text="🐛"
+            android:textSize="24sp"
+            android:backgroundTint="#FF9500"
+            android:contentDescription="Modo debug"/>
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="0dp"/>
+
+        <Button
+            android:id="@+id/filterButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text="⚙"
+            android:textSize="24sp"
+            android:backgroundTint="#1A1E2E"
+            android:contentDescription="Filtros"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
