@@ -144,5 +144,6 @@
     <string name="risk_beacon_detected">Baliza de rastreo detectada</string>
     <string name="risk_close_proximity">Proximidad muy cercana</string>
     <string name="downloads_folder">Descargas</string>
+    <string name="discard_stop"><![CDATA[🗑️ Descartar]]></string>
 </resources>
 

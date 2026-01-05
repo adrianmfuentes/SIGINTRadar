@@ -24,6 +24,12 @@ class RadarView @JvmOverloads constructor(
     private var maxRadius = 0f
     private var isScanning = false
     private var onDeviceClickListener: ((DetectedDevice) -> Unit)? = null
+    private var showHeatMap = false
+
+    // Heat map data
+    private val heatMapGrid = Array(36) { IntArray(10) } // 36 angular sectors, 10 distance rings
+    private var heatMapBitmap: Bitmap? = null
+    private var needsHeatMapUpdate = true
 
     private val backgroundPaint = Paint().apply {
         color = Color.rgb(10, 14, 26)
@@ -68,6 +74,11 @@ class RadarView @JvmOverloads constructor(
 
         // Background
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), backgroundPaint)
+
+        // Heat map (si está activado)
+        if (showHeatMap && devices.isNotEmpty()) {
+            drawHeatMap(canvas)
+        }
 
         // Círculos concéntricos
         drawDistanceCircles(canvas)
@@ -238,6 +249,8 @@ class RadarView @JvmOverloads constructor(
 
     fun updateDevices(newDevices: List<DetectedDevice>) {
         devices = newDevices
+        needsHeatMapUpdate = true
+        updateHeatMapData()
         invalidate()
     }
 
@@ -251,8 +264,117 @@ class RadarView @JvmOverloads constructor(
         invalidate()
     }
 
+    fun toggleHeatMap() {
+        showHeatMap = !showHeatMap
+        invalidate()
+    }
+
+    fun isHeatMapEnabled(): Boolean = showHeatMap
+
     fun setOnDeviceClickListener(listener: (DetectedDevice) -> Unit) {
         onDeviceClickListener = listener
+    }
+
+    private fun updateHeatMapData() {
+        // Reset grid
+        for (i in heatMapGrid.indices) {
+            for (j in heatMapGrid[i].indices) {
+                heatMapGrid[i][j] = 0
+            }
+        }
+
+        // Populate grid with device positions
+        devices.forEach { device ->
+            val angle = device.getRadarAngle()
+            val distance = device.getNormalizedDistance(50f)
+
+            // Convert to grid coordinates
+            val sectorIndex = ((angle / 10f).toInt()).coerceIn(0, 35)
+            val ringIndex = ((distance * 10).toInt()).coerceIn(0, 9)
+
+            heatMapGrid[sectorIndex][ringIndex]++
+        }
+
+        needsHeatMapUpdate = true
+    }
+
+    private fun drawHeatMap(canvas: Canvas) {
+        val maxDevices = heatMapGrid.flatMap { it.toList() }.maxOrNull() ?: 1
+
+        val heatPaint = Paint().apply {
+            style = Paint.Style.FILL
+            isAntiAlias = true
+        }
+
+        // Draw each sector
+        for (sectorIndex in heatMapGrid.indices) {
+            val startAngle = sectorIndex * 10f - 90f // -90 to start from top
+
+            for (ringIndex in heatMapGrid[sectorIndex].indices) {
+                val count = heatMapGrid[sectorIndex][ringIndex]
+                if (count == 0) continue
+
+                val intensity = count.toFloat() / maxDevices
+                val innerRadius = (maxRadius / 10f) * ringIndex
+                val outerRadius = (maxRadius / 10f) * (ringIndex + 1)
+
+                // Heat map color: blue (low) -> green -> yellow -> red (high)
+                val color = getHeatMapColor(intensity)
+                heatPaint.color = Color.argb(
+                    (intensity * 120).toInt(), // Alpha based on intensity
+                    Color.red(color),
+                    Color.green(color),
+                    Color.blue(color)
+                )
+
+                // Draw arc segment
+                val rectF = RectF(
+                    centerX - outerRadius,
+                    centerY - outerRadius,
+                    centerX + outerRadius,
+                    centerY + outerRadius
+                )
+                canvas.drawArc(rectF, startAngle, 10f, true, heatPaint)
+
+                // Also draw inner circle to create ring effect
+                if (innerRadius > 0) {
+                    val innerRectF = RectF(
+                        centerX - innerRadius,
+                        centerY - innerRadius,
+                        centerX + innerRadius,
+                        centerY + innerRadius
+                    )
+                    heatPaint.color = Color.argb(0, 0, 0, 0) // Transparent
+                    heatPaint.style = Paint.Style.FILL
+                    canvas.drawArc(innerRectF, startAngle, 10f, true, heatPaint)
+                }
+            }
+        }
+    }
+
+    private fun getHeatMapColor(intensity: Float): Int {
+        return when {
+            intensity < 0.25f -> {
+                // Blue to Cyan
+                val t = intensity / 0.25f
+                Color.rgb(0, (t * 255).toInt(), 255)
+            }
+            intensity < 0.5f -> {
+                // Cyan to Green
+                val t = (intensity - 0.25f) / 0.25f
+                Color.rgb(0, 255, ((1 - t) * 255).toInt())
+            }
+            intensity < 0.75f -> {
+                // Green to Yellow
+                val t = (intensity - 0.5f) / 0.25f
+                Color.rgb((t * 255).toInt(), 255, 0)
+            }
+            else -> {
+                // Yellow to Red
+                val t = (intensity - 0.75f) / 0.25f
+                Color.rgb(255, ((1 - t) * 255).toInt(), 0)
+            }
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

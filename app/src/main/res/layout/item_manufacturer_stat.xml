@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#1A1A1A"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/tvManufacturer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Manufacturer Name"
+        android:textColor="#00FF00"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:id="@+id/tvCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Count: 0"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tvAvgRssi"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Avg RSSI: 0"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp">
+
+        <TextView
+            android:id="@+id/tvDistance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Distance: 0-0m"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@+id/tvRisk"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Risk: Low"
+            android:textColor="#00FF00"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+</LinearLayout>
+

@@ -15,7 +15,7 @@ import com.sigint.radar.database.entities.*
         DevicePatternEntity::class
     ],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 abstract class RadarDatabase : RoomDatabase() {
 

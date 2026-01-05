@@ -144,5 +144,6 @@
     <string name="risk_beacon_detected">Tracking beacon detected</string>
     <string name="risk_close_proximity">Very close proximity</string>
     <string name="downloads_folder">Downloads</string>
+    <string name="discard_stop"><![CDATA[🗑️ Discard & Stop]]></string>
 </resources>
 

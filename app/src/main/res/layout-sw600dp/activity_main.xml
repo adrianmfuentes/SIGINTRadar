@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout 
+<!-- Layout optimizado para tablets y pantallas grandes (>600dp) -->
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,7 +9,7 @@
     android:background="#0A0E1A"
     tools:context=".MainActivity">
 
-    <!-- Header con estadísticas -->
+    <!-- Header con estadísticas - igual que en phones -->
     <LinearLayout
         android:id="@+id/headerLayout"
         android:layout_width="match_parent"
@@ -17,8 +18,7 @@
         android:padding="16dp"
         android:background="#15192A"
         app:layout_constraintTop_toTopOf="parent">
-        
-        <!-- Logo and title -->
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,13 +43,13 @@
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
 
-        <!-- Estadísticas -->
+        <!-- Estadísticas en horizontal -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="12dp">
-            
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
                 android:orientation="vertical"
                 android:padding="8dp"
                 android:background="#1A1E2E">
-                
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                     android:textColor="#00FF4180"
                     android:textSize="10sp"
                     android:fontFamily="monospace"/>
-                
+
                 <TextView
                     android:id="@+id/totalDevicesText"
                     android:layout_width="wrap_content"
@@ -76,12 +76,11 @@
                     android:textStyle="bold"
                     android:fontFamily="monospace"/>
             </LinearLayout>
-            
+
             <View
                 android:layout_width="8dp"
                 android:layout_height="0dp"/>
-            
-            <!-- Risk breakdown -->
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -89,7 +88,7 @@
                 android:orientation="vertical"
                 android:padding="8dp"
                 android:background="#1A1E2E">
-                
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -97,109 +96,62 @@
                     android:textColor="#00FF4180"
                     android:textSize="10sp"
                     android:fontFamily="monospace"/>
-                
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="4dp">
-                    
+
                     <TextView
-                        android:id="@+id/criticalCountText"
+                        android:id="@+id/criticalText"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#FF0032"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:gravity="center"/>
-                    
+                        android:text="C: 0"
+                        android:textColor="#FF0000"
+                        android:textSize="12sp"
+                        android:fontFamily="monospace"/>
+
                     <TextView
-                        android:id="@+id/highCountText"
+                        android:id="@+id/highText"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#FF3264"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:gravity="center"/>
-                    
+                        android:text="H: 0"
+                        android:textColor="#FF6600"
+                        android:textSize="12sp"
+                        android:fontFamily="monospace"/>
+
                     <TextView
-                        android:id="@+id/mediumCountText"
+                        android:id="@+id/mediumText"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text="M: 0"
                         android:textColor="#FFAA00"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:gravity="center"/>
-                    
+                        android:textSize="12sp"
+                        android:fontFamily="monospace"/>
+
                     <TextView
-                        android:id="@+id/lowCountText"
+                        android:id="@+id/lowText"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#00FF41"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:gravity="center"/>
-                </LinearLayout>
-                
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="CRIT"
-                        android:textColor="#FF0032"
-                        android:textSize="8sp"
-                        android:gravity="center"/>
-                    
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="HIGH"
-                        android:textColor="#FF3264"
-                        android:textSize="8sp"
-                        android:gravity="center"/>
-                    
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="MED"
-                        android:textColor="#FFAA00"
-                        android:textSize="8sp"
-                        android:gravity="center"/>
-                    
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:text="LOW"
-                        android:textColor="#00FF41"
-                        android:textSize="8sp"
-                        android:gravity="center"/>
+                        android:text="L: 0"
+                        android:textColor="#00FF00"
+                        android:textSize="12sp"
+                        android:fontFamily="monospace"/>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-        
-        <!-- Contadores tipo -->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="8dp">
-            
+
             <TextView
                 android:id="@+id/wifiCountText"
                 android:layout_width="0dp"
@@ -209,7 +161,7 @@
                 android:textColor="#00FF41"
                 android:textSize="12sp"
                 android:fontFamily="monospace"/>
-            
+
             <TextView
                 android:id="@+id/bluetoothCountText"
                 android:layout_width="0dp"
@@ -222,7 +174,39 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Guideline dinámica para controlar tamaño radar vs lista -->
+    <!-- Guideline vertical para dividir radar y lista -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/verticalGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.55"/>
+
+    <!-- Radar View - Lado izquierdo en tablets -->
+    <com.sigint.radar.ui.RadarView
+        android:id="@+id/radarView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/buttonLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/verticalGuideline"/>
+
+    <!-- Lista de dispositivos - Lado derecho en tablets -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/deviceRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#0A0E1A"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout"
+        app:layout_constraintBottom_toTopOf="@id/buttonLayout"
+        app:layout_constraintStart_toEndOf="@id/verticalGuideline"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Guideline horizontal (no usado en tablets pero requerido por el código) -->
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/radarGuideline"
         android:layout_width="wrap_content"
@@ -230,32 +214,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.70"/>
 
-    <!-- Radar View - Tamaño dinámico controlado por guideline -->
-    <com.sigint.radar.ui.RadarView
-        android:id="@+id/radarView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="8dp"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintBottom_toTopOf="@id/radarGuideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- Lista de dispositivos - Tamaño dinámico -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/deviceRecyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#0A0E1A"
-        android:paddingTop="8dp"
-        android:clipToPadding="false"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/radarGuideline"
-        app:layout_constraintBottom_toTopOf="@id/buttonLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <!-- Botones de control - Diseño mejorado y responsive -->
+    <!-- Botones de control -->
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:layout_width="match_parent"
@@ -265,8 +224,7 @@
         android:background="#15192A"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent">
-        
-        <!-- Botón principal de escaneo -->
+
         <Button
             android:id="@+id/scanButton"
             android:layout_width="0dp"
@@ -281,7 +239,6 @@
             android:layout_marginEnd="8dp"
             android:contentDescription="Iniciar o detener escaneo"/>
 
-        <!-- Botón de menú desplegable -->
         <Button
             android:id="@+id/menuButton"
             android:layout_width="56dp"
@@ -293,7 +250,6 @@
             android:layout_marginEnd="8dp"
             android:contentDescription="Menu"/>
 
-        <!-- Botón de ayuda -->
         <Button
             android:id="@+id/helpButton"
             android:layout_width="56dp"
@@ -306,59 +262,38 @@
             android:contentDescription="@string/help_button"/>
     </LinearLayout>
 
-    <!-- Floating Action Buttons para funciones secundarias -->
+    <!-- FABs (no usados en tablets pero mantenidos para compatibilidad) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabMore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_add"
-        android:contentDescription="More Options"
-        android:backgroundTint="#00FF41"
-        app:tint="#000000"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/buttonLayout"
-        android:visibility="gone"/>
+        app:layout_constraintBottom_toTopOf="@id/buttonLayout"/>
 
-    <!-- Mini FABs que aparecen al tocar fabMore -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabStats"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_info_details"
-        android:contentDescription="Statistics"
-        app:fabSize="mini"
-        android:backgroundTint="#2E1A3E"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/fabMore"
-        android:visibility="gone"/>
+        app:layout_constraintBottom_toTopOf="@id/fabMore"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabHeatMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_dialog_map"
-        android:contentDescription="Heat Map"
-        app:fabSize="mini"
-        android:backgroundTint="#3E1A1A"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/fabStats"
-        android:visibility="gone"/>
+        app:layout_constraintBottom_toTopOf="@id/fabStats"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabShare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_share"
-        android:contentDescription="Share"
-        app:fabSize="mini"
-        android:backgroundTint="#1A3E3E"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/fabHeatMap"
-        android:visibility="gone"/>
+        app:layout_constraintBottom_toTopOf="@id/fabHeatMap"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,385 +1,514 @@
-# 📡 SIGINT Radar - Android Native App
+# 📡 SIGINT Radar
 
-Aplicación Android nativa para detección y análisis de dispositivos WiFi/Bluetooth cercanos con capacidades SIGINT.
+<div align="center">
 
-## 🎯 Características Implementadas
+![SIGINT Radar](https://img.shields.io/badge/Android-8.0%2B-green?style=for-the-badge&logo=android)
+![Kotlin](https://img.shields.io/badge/Kotlin-1.9.20-purple?style=for-the-badge&logo=kotlin)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
+![Build](https://img.shields.io/badge/Build-Passing-success?style=for-the-badge)
 
-### ✅ Core Features
-- **Escaneo WiFi en tiempo real** (1-3 segundos de actualización)
-- **Escaneo Bluetooth LE** con detección de beacons
-- **Radar visual táctico** con animación 60fps
-- **Análisis de riesgo automático** (4 niveles: CRITICAL, HIGH, MEDIUM, LOW)
-- **Estimación de distancia** mediante RSSI y modelos de propagación
-- **Identificación de fabricantes** (OUI database con 100+ entradas)
-- **Foreground Service** para escaneo continuo en background
-- **UI/UX nativa** con Material Design
+**Advanced WiFi & Bluetooth Security Scanner for Android**
 
-### 🔍 Análisis Avanzado
-- Detección de cámaras de vigilancia (Hikvision, Dahua, Axis, etc.)
-- Identificación de dispositivos IoT vulnerables (ESP32/ESP8266)
-- Análisis de seguridad WiFi (WEP/WPA/WPA2/WPA3)
-- Detección de beacons de tracking (iBeacon, Eddystone)
-- Channel width detection (20/40/80/160 MHz)
-- Soporte para WiFi 6GHz
+[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Screenshots](#-screenshots) • [Documentation](#-documentation)
+
+</div>
 
 ---
 
-## 📁 Estructura del Proyecto
+## 📋 Overview
 
-```
-app/src/main/
-├── java/com/sigint/radar/
-│   ├── MainActivity.kt              # Actividad principal
-│   ├── model/
-│   │   └── DetectedDevice.kt        # Modelo de datos
-│   ├── scanner/
-│   │   ├── WifiScanner.kt           # Escáner WiFi
-│   │   └── BluetoothScanner.kt      # Escáner BLE
-│   ├── service/
-│   │   └── ScannerService.kt        # Servicio en foreground
-│   ├── ui/
-│   │   ├── RadarView.kt             # Vista custom del radar
-│   │   └── DeviceAdapter.kt         # Adapter de RecyclerView
-│   └── util/
-│       └── OuiDatabase.kt           # Base de datos de fabricantes
-│
-├── res/
-│   ├── layout/
-│   │   ├── activity_main.xml        # Layout principal
-│   │   └── item_device.xml          # Layout de item de lista
-│   ├── values/
-│   │   ├── colors.xml               # Colores del tema
-│   │   └── strings.xml              # Strings
-│   └── drawable/
-│       ├── ic_radar.xml             # Ícono del radar
-│       └── risk_badge.xml           # Badge de riesgo
-│
-└── AndroidManifest.xml              # Manifest con permisos
-```
+**SIGINT Radar** is a powerful open-source Android application designed for security professionals, network administrators, and privacy-conscious users. It provides real-time scanning and analysis of WiFi and Bluetooth Low Energy (BLE) devices in your vicinity, with advanced threat detection capabilities.
+
+### 🎯 Key Highlights
+
+- **Real-time Scanning**: Continuous monitoring of WiFi networks and Bluetooth devices
+- **Advanced Threat Detection**: Identifies Evil Twin attacks, Deauth patterns, Karma/Jasager attacks, and more
+- **Interactive Radar Visualization**: Military-style radar interface with heat map support
+- **Comprehensive Analytics**: Manufacturer statistics, pattern detection, and historical tracking
+- **Export & Share**: Multiple export formats (JSON, CSV) with easy sharing options
+- **Responsive Design**: Optimized for phones and tablets with adaptive layouts
 
 ---
 
-## 🚀 Instalación
+## ✨ Features
 
-### Opción 1: Android Studio (Recomendado)
+### 🔍 Detection Capabilities
 
-1. **Instalar Android Studio**
-   - Descargar desde: https://developer.android.com/studio
-   - Versión mínima: Arctic Fox (2020.3.1) o superior
+#### WiFi Security Analysis
+- **Evil Twin Detection**: Identifies rogue access points mimicking legitimate networks
+- **Deauth Attack Detection**: Recognizes suspicious disconnection patterns
+- **Karma/Jasager Detection**: Spots fake APs responding to probe requests
+- **Rogue AP Identification**: Detects unauthorized access points
+- **Channel Analysis**: Monitors 2.4GHz, 5GHz, and 6GHz WiFi bands
+- **Encryption Assessment**: Evaluates security protocols (WPA2, WPA3, Open)
 
-2. **Crear nuevo proyecto**
+#### Bluetooth Threat Analysis
+- **BLE Device Scanning**: Comprehensive Bluetooth Low Energy monitoring
+- **Beacon Detection**: Identifies iBeacon, Eddystone, and tracking beacons
+- **MAC Randomization Detection**: Spots devices using privacy features
+- **Service UUID Analysis**: Examines advertised Bluetooth services
+
+### 📊 Analytics & Visualization
+
+#### Interactive Radar View
+- **Military-Style Display**: 360° radar with distance rings (0-50m)
+- **Heat Map Overlay**: Visualizes device density with color gradients
+- **Real-time Animation**: Smooth scanning animation with device tracking
+- **Risk-Based Coloring**: Color-coded threats (Critical, High, Medium, Low)
+- **Touch Interactions**: Tap devices for detailed information
+
+#### Advanced Statistics
+- **Manufacturer Analysis**: Device counts and metrics by vendor (OUI database)
+- **Historical Tracking**: Scan history with comparison tools
+- **Pattern Detection**: Co-occurrence analysis and behavioral patterns
+- **Risk Assessments**: Automated security scoring and threat levels
+
+### 💾 Data Management
+
+#### Export Options
+- **JSON Format**: Structured data with full metadata
+- **CSV Format**: Spreadsheet-compatible exports
+- **Text Summaries**: Quick overview reports
+- **Share Integration**: Direct sharing via email, cloud, messaging apps
+
+#### Database Features
+- **Local Storage**: Room Database with efficient SQLite backend
+- **Scan History**: Automatic saving with timestamps
+- **Known Devices**: Whitelist/blacklist management with trust levels
+- **Pattern Storage**: Device co-occurrence and relationship tracking
+
+### 🎨 User Interface
+
+#### Responsive Design
+- **Adaptive Layouts**: Optimized for phones, phablets, and tablets
+- **Dark Theme**: Eye-friendly interface for all lighting conditions
+- **Material Components**: Modern Material Design 3 elements
+- **Accessibility**: Large touch targets and readable fonts
+
+#### Smart Controls
+- **Compact Menu**: Organized options in a popup menu
+- **Quick Actions**: One-tap access to common functions
+- **Filter System**: Multi-criteria device filtering
+- **Debug Mode**: Enhanced scanning with simulated devices
+
+---
+
+## 🚀 Installation
+
+### Prerequisites
+
+- **Android Device**: Android 8.0 (API 26) or higher
+- **Permissions**: Location, Bluetooth, WiFi access
+- **Storage**: ~10 MB for app + data
+
+### Option 1: Install APK
+
+1. Download the latest APK from [Releases](releases/)
    ```
-   File → New → New Project → Empty Activity
-   ```
-   - Name: SIGINT Radar
-   - Package name: com.sigint.radar
-   - Language: Kotlin
-   - Minimum SDK: API 26 (Android 8.0)
-
-3. **Copiar archivos**
-   - Copia todos los archivos `.kt` a sus respectivas carpetas
-   - Copia los archivos XML a `res/`
-   - Reemplaza `AndroidManifest.xml`
-   - Reemplaza ambos `build.gradle.kts`
-
-4. **Sincronizar Gradle**
-   ```
-   File → Sync Project with Gradle Files
+   app/build/outputs/apk/debug/app-debug.apk
    ```
 
-5. **Compilar**
-   ```
-   Build → Make Project (Ctrl+F9)
-   ```
+2. Enable installation from unknown sources:
+   - Settings → Security → Unknown Sources ✓
 
-6. **Ejecutar**
-   - Conecta tu dispositivo Android con USB debugging activado
-   - Run → Run 'app' (Shift+F10)
+3. Install the APK and grant required permissions
 
-### Opción 2: Compilación desde línea de comandos
+### Option 2: Build from Source
+
+#### Requirements
+- **JDK 17**: Oracle JDK or OpenJDK 17
+- **Android SDK**: Platform 34, Build Tools 34.0.0
+- **Gradle**: 8.13 (included via wrapper)
+
+#### Build Steps
 
 ```bash
-# Clonar o descargar el proyecto
-git clone https://github.com/tu-usuario/sigint-radar.git
+# Clone the repository
+git clone https://github.com/yourusername/sigint-radar.git
 cd sigint-radar
 
-# Compilar APK debug
+# Build debug APK
 ./gradlew assembleDebug
 
-# APK generado en:
-# app/build/outputs/apk/debug/app-debug.apk
+# Or use the convenience script (Windows)
+compile.bat
 
-# Instalar en dispositivo conectado
-adb install app/build/outputs/apk/debug/app-debug.apk
+# Install on connected device
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+**Windows Quick Build:**
+```cmd
+compile.bat
+```
+
+**Install on Device:**
+```cmd
+install.bat
 ```
 
 ---
 
-## 📱 Configuración del Dispositivo
+## 📖 Usage
 
-### Permisos Necesarios
+### First Launch
 
-La app solicitará estos permisos en tiempo de ejecución:
+1. **Grant Permissions**: Allow Location, Bluetooth, and WiFi access
+2. **Start Scanning**: Tap the green "Start Scan" button
+3. **View Results**: Devices appear on the radar and in the list below
 
-1. **Ubicación (Fine/Coarse)**
-   - Necesario para escaneo WiFi (limitación de Android)
-   - Settings → Apps → SIGINT Radar → Permissions → Location → Allow
+### Basic Operations
 
-2. **Bluetooth Scan** (Android 12+)
-   - Para escaneo Bluetooth LE
-   - Se solicita automáticamente
+#### Scanning
+- **Start**: Tap "Start Scan" button (turns red when active)
+- **Stop**: Tap "Stop Scan" → Choose save option
+- **Auto-Save**: Results automatically saved to history
 
-3. **Notificaciones** (Android 13+)
-   - Para el Foreground Service
-   - Opcional pero recomendado
+#### Filtering
+1. Tap **☰ Menu** → **⚙ Filters**
+2. Select device types and risk levels
+3. Tap **Apply** to filter results
 
-### Configuración de Desarrollador
+#### Viewing Details
+- **Tap any device** on radar or list
+- See detailed information:
+  - Signal strength (RSSI)
+  - Distance estimation
+  - Manufacturer (OUI lookup)
+  - Security capabilities
+  - Risk factors
 
-Para mejorar el rendimiento del escaneo:
+#### Statistics
+1. Tap **☰ Menu** → **📊 Statistics**
+2. View manufacturer breakdown
+3. See device counts, RSSI averages, risk distribution
+
+#### Heat Map
+1. Tap **☰ Menu** → **🔥 Heat Map**
+2. Toggle density visualization
+3. Colors: Blue (low) → Red (high density)
+
+### Advanced Features
+
+#### Sharing Results
+1. Tap **☰ Menu** → **📤 Share**
+2. Choose format:
+   - JSON (technical data)
+   - CSV (spreadsheet)
+   - Text (summary)
+3. Select app to share with
+
+#### Debug Mode
+1. Tap **☰ Menu** → **⚡ Debug Mode**
+2. Enables simulated devices for testing
+3. Useful for UI development
+
+#### Known Devices Management
+- **Import/Export**: Manage trusted device lists
+- **Trust Levels**: TRUSTED, SUSPICIOUS, BLOCKED, UNKNOWN
+- **Alerts**: Enable notifications for specific devices
+
+---
+
+## 📸 Screenshots
+
+<div align="center">
+
+| Radar View | Device List | Statistics |
+|------------|-------------|------------|
+| ![Radar](docs/screenshots/radar.png) | ![List](docs/screenshots/list.png) | ![Stats](docs/screenshots/stats.png) |
+
+| Heat Map | Filters | Device Details |
+|----------|---------|----------------|
+| ![Heat](docs/screenshots/heatmap.png) | ![Filters](docs/screenshots/filters.png) | ![Details](docs/screenshots/details.png) |
+
+</div>
+
+---
+
+## 🏗️ Architecture
+
+### Technology Stack
+
+- **Language**: Kotlin 1.9.20
+- **UI Framework**: Android View System with Material Components
+- **Database**: Room 2.6.1 with SQLite
+- **Async**: Kotlin Coroutines + Flow
+- **DI**: Manual dependency injection
+- **Build**: Gradle 8.13 with Kotlin DSL
+
+### Project Structure
 
 ```
-Settings → Developer Options:
-- Keep screen awake when charging: ON
-- Background process limit: Standard limit
+app/src/main/java/com/sigint/radar/
+├── MainActivity.kt              # Main activity with scanning logic
+├── database/
+│   ├── RadarDatabase.kt        # Room database configuration
+│   ├── dao/                    # Data Access Objects
+│   │   ├── ScanHistoryDao.kt
+│   │   ├── KnownDeviceDao.kt
+│   │   └── DevicePatternDao.kt
+│   └── entities/               # Database entities
+├── model/
+│   └── DetectedDevice.kt       # Device data model
+├── repository/
+│   ├── ScanHistoryRepository.kt
+│   ├── KnownDeviceRepository.kt
+│   └── PatternRepository.kt
+├── scanner/
+│   ├── WifiScanner.kt          # WiFi scanning implementation
+│   └── BluetoothScanner.kt     # BLE scanning implementation
+├── service/
+│   └── ScannerService.kt       # Foreground service
+├── ui/
+│   ├── RadarView.kt            # Custom radar view
+│   └── DeviceAdapter.kt        # RecyclerView adapter
+└── util/
+    ├── AttackDetector.kt       # Threat detection algorithms
+    ├── PatternDetector.kt      # Behavioral analysis
+    ├── OuiDatabase.kt          # MAC vendor lookup
+    └── CsvExporter.kt          # Export utilities
+```
+
+### Key Components
+
+#### ScannerService
+- Foreground service for continuous scanning
+- Manages WiFi and Bluetooth scanners
+- Emits device data via Kotlin Flow
+- Handles permissions and state management
+
+#### RadarView
+- Custom View with Canvas drawing
+- 360° polar coordinate system
+- Heat map grid (36 sectors × 10 rings)
+- Touch event handling for device selection
+
+#### AttackDetector
+- Evil Twin detection (same SSID, different MAC/manufacturer)
+- Deauth pattern analysis (device disappearance rates)
+- Karma/Jasager detection (multi-SSID responses)
+- Rogue AP identification
+
+#### Room Database
+- **Entities**: ScanHistory, DeviceHistory, KnownDevice, DevicePattern
+- **DAOs**: CRUD operations with coroutine support
+- **Repositories**: Business logic layer
+- **Migrations**: Schema versioning support
+
+---
+
+## 🔒 Security & Privacy
+
+### Data Collection
+- **All data stays on device** - No cloud uploads
+- **No analytics tracking** - Zero telemetry
+- **No ads** - 100% ad-free
+
+### Permissions Required
+
+| Permission | Purpose | Required |
+|------------|---------|----------|
+| `ACCESS_FINE_LOCATION` | WiFi scanning (Android requirement) | ✅ Yes |
+| `ACCESS_COARSE_LOCATION` | General location context | ✅ Yes |
+| `BLUETOOTH_SCAN` | BLE device scanning (Android 12+) | ✅ Yes |
+| `BLUETOOTH_CONNECT` | BLE device information | ✅ Yes |
+| `ACCESS_WIFI_STATE` | WiFi adapter state | ✅ Yes |
+| `CHANGE_WIFI_STATE` | Trigger WiFi scans | ✅ Yes |
+| `FOREGROUND_SERVICE` | Background scanning | ✅ Yes |
+| `POST_NOTIFICATIONS` | Scan notifications | ⚠️ Optional |
+
+### Best Practices
+- Use in controlled environments only
+- Respect local wireless regulations
+- Don't use for unauthorized network testing
+- Keep scan data encrypted if exported
+
+---
+
+## 🛠️ Development
+
+### Setup Development Environment
+
+1. **Install Android Studio**: Arctic Fox or newer
+2. **Configure JDK 17**:
+   ```
+   File → Settings → Build Tools → Gradle → Gradle JDK → jbr-17
+   ```
+3. **Sync Gradle**: File → Sync Project with Gradle Files
+
+### Building
+
+```bash
+# Debug build
+./gradlew assembleDebug
+
+# Release build (requires signing config)
+./gradlew assembleRelease
+
+# Run tests
+./gradlew test
+
+# Clean build
+./gradlew clean
+```
+
+### Code Style
+- **Kotlin Coding Conventions**: Official Kotlin style guide
+- **Indentation**: 4 spaces
+- **Max Line Length**: 120 characters
+- **Naming**: camelCase for variables, PascalCase for classes
+
+### Testing
+```bash
+# Unit tests
+./gradlew testDebugUnitTest
+
+# Instrumentation tests (requires device)
+./gradlew connectedAndroidTest
 ```
 
 ---
 
-## 🎮 Uso de la Aplicación
+## 📚 Documentation
 
-### Flujo Básico
+### API Documentation
+- [MainActivity.kt](docs/api/MainActivity.md) - Main activity reference
+- [DetectedDevice.kt](docs/api/DetectedDevice.md) - Device model
+- [AttackDetector.kt](docs/api/AttackDetector.md) - Threat detection
 
-1. **Abrir la app**
-   - Conceder permisos cuando se soliciten
+### User Guides
+- [Getting Started](docs/guides/getting-started.md)
+- [Advanced Features](docs/guides/advanced-features.md)
+- [Troubleshooting](docs/guides/troubleshooting.md)
 
-2. **Iniciar escaneo**
-   - Tap en "Start Scan"
-   - El botón cambia a rojo y dice "Stop Scan"
-
-3. **Ver dispositivos**
-   - **Radar visual**: Muestra posición y riesgo
-   - **Lista inferior**: Detalles técnicos de cada dispositivo
-
-4. **Detener escaneo**
-   - Tap en "Stop Scan"
-   - Los datos se limpian
-
-### Interpretación del Radar
-
-#### Colores de Riesgo
-- 🔴 **CRITICAL**: Cámaras de vigilancia, dispositivos de espionaje
-- 🟠 **HIGH**: Redes sin seguridad, dispositivos de tracking
-- 🟡 **MEDIUM**: IoT vulnerable, redes sospechosas
-- 🟢 **LOW**: Dispositivos seguros, redes WPA3
-
-#### Círculos Concéntricos
-- Cada círculo = 10 metros
-- 5 círculos = 50 metros máximo
-
-#### Íconos
-- 📶 WiFi
-- 🔵 Bluetooth
-- 📍 Beacon
+### Build Scripts
+- [compile.bat](SCRIPTS_README.md) - Compilation guide
+- [install.bat](SCRIPTS_README.md) - Installation helper
+- [clean.bat](SCRIPTS_README.md) - Cache cleaning
 
 ---
 
-## 🔧 Personalización
+## 🤝 Contributing
 
-### Modificar Intervalo de Escaneo
+Contributions are welcome! Please follow these guidelines:
 
-En `ScannerService.kt` línea 24:
-```kotlin
-private const val SCAN_INTERVAL_MS = 2000L  // Cambiar a 1000L para 1s
-```
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Commit changes**: `git commit -m 'Add amazing feature'`
+4. **Push to branch**: `git push origin feature/amazing-feature`
+5. **Open Pull Request**
 
-### Ajustar Modelo de Distancia
-
-En `WifiScanner.kt` línea 69:
-```kotlin
-val pathLossExponent = 3.5  // Reducir a 2.5 para espacios abiertos
-```
-
-### Añadir Fabricantes a OUI Database
-
-En `OuiDatabase.kt`:
-```kotlin
-private val database = mapOf(
-    "AABBCC" to "Tu Fabricante",
-    // ... más entradas
-)
-```
-
-Encuentra códigos OUI en: https://standards-oui.ieee.org/
-
-### Cambiar Colores del Tema
-
-En `res/values/colors.xml`:
-```xml
-<color name="green_primary">#00FF41</color>  <!-- Cambiar a tu color -->
-```
+### Contribution Areas
+- 🐛 Bug fixes
+- ✨ New features
+- 📝 Documentation improvements
+- 🌍 Translations
+- 🎨 UI/UX enhancements
 
 ---
 
-## 📊 Datos Técnicos
+## 🐛 Known Issues
 
-### Precisión de Distancia
+### Android Limitations
+- **Background Scanning**: Limited on Android 9+ due to OS restrictions
+- **WiFi Scanning Throttling**: Android 9+ limits scan frequency to ~4/2min
+- **BLE Permissions**: Android 12+ requires new permission model
+- **Location Required**: Android mandates location for WiFi scanning
 
-| Método | Precisión | Requisitos |
-|--------|-----------|------------|
-| RSSI básico | ±40-50% | Ninguno |
-| RSSI mejorado | ±30-40% | Tx Power real |
-| WiFi RTT | ±1-2m | Android 9+, AP compatible |
-
-### Consumo de Batería
-
-- **Modo activo**: ~15-20% por hora
-- **Optimización**: Usar Foreground Service en lugar de Activity
-
-### Limitaciones de Android
-
-1. **WiFi Scan Throttling** (Android 9+)
-   - Máximo 4 scans cada 2 minutos en background
-   - **Solución**: Foreground Service (implementado)
-
-2. **Bluetooth Scan Throttling** (Android 10+)
-   - Menos restrictivo que WiFi
-   - ~1 scan por segundo posible
-
-3. **Permisos de Ubicación**
-   - Android requiere ubicación para WiFi scan
-   - No se usa GPS, solo el permiso
+### Workarounds
+- Use foreground service for continuous scanning
+- Enable Developer Options → Keep screen on while charging
+- Disable battery optimization for SIGINT Radar
 
 ---
 
-## 🐛 Troubleshooting
+## 📝 Changelog
 
-### No aparecen dispositivos
+### Version 1.0.0 (2026-01-05)
+- 🎉 Initial release
+- ✅ WiFi & BLE scanning
+- ✅ Radar visualization with heat map
+- ✅ Advanced threat detection (Evil Twin, Deauth, Karma/Jasager)
+- ✅ Manufacturer statistics
+- ✅ Export/import functionality
+- ✅ Responsive UI for phones and tablets
+- ✅ Known devices management
+- ✅ Pattern detection and analysis
 
-**Causa**: Permisos no otorgados
+---
 
-**Solución**:
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
 ```
-Settings → Apps → SIGINT Radar → Permissions
-- Location: Allow
-- Bluetooth: Allow (Android 12+)
-```
+MIT License
 
-### "Location permission required"
+Copyright (c) 2026 SIGINT Radar Contributors
 
-**Causa**: Ubicación desactivada
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-**Solución**:
-```
-Settings → Location → ON
-```
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-### Crash al iniciar escaneo
-
-**Causa**: Runtime crash por permisos
-
-**Solución**: Reinstalar app y otorgar permisos
-
-### Escaneo muy lento (>15s)
-
-**Causa**: Throttling de Android
-
-**Solución**:
-- Mantener app en primer plano
-- Verificar que el Foreground Service esté activo
-- Desactivar "Battery Optimization" para la app
-
-### Dispositivos desaparecen rápidamente
-
-**Causa**: Timeout muy corto
-
-**Solución**: En `ScannerService.kt` línea 93:
-```kotlin
-now - device.timestamp > 30_000  // Cambiar a 60_000 (1 minuto)
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 ```
 
 ---
 
-## 🔐 Consideraciones de Seguridad y Legal
+## 👏 Acknowledgments
 
-### ⚠️ Disclaimer Legal
-
-Esta aplicación es **exclusivamente para uso educativo y auditorías de seguridad autorizadas**:
-
-✅ **Permitido**:
-- Escanear tus propios dispositivos
-- Auditar tu red doméstica
-- Investigación académica
-- Detección de dispositivos no autorizados en tu propiedad
-
-❌ **NO permitido**:
-- Interceptar comunicaciones de terceros
-- Acceder a redes sin autorización
-- Vigilancia de personas
-- Tracking de dispositivos ajenos
-
-**El usuario es el único responsable del uso de esta herramienta.**
-
-### Privacidad
-
-- ✅ No recopila datos personales
-- ✅ No envía información a servidores externos
-- ✅ Todos los datos se quedan en el dispositivo
-- ✅ No requiere conexión a internet
+- **OUI Database**: [IEEE Registration Authority](https://standards.ieee.org/develop/regauth/oui/)
+- **Icons**: Material Design Icons
+- **Inspiration**: Military radar systems and SIGINT operations
+- **Community**: Android security researchers and contributors
 
 ---
 
-## 🚧 Roadmap / Features Futuras
+## 📞 Support
 
-### En desarrollo
-- [ ] WiFi RTT para precisión ±1-2m (Android 9+)
-- [ ] Exportar datos a CSV/JSON
-- [ ] Historial de escaneos con gráficos
-- [ ] Modo de alerta automática (beep cuando aparece CRITICAL)
-- [ ] Widget para home screen
+### Getting Help
+- **Issues**: [GitHub Issues](https://github.com/yourusername/sigint-radar/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/yourusername/sigint-radar/discussions)
+- **Email**: support@sigint-radar.example.com
 
-### Planeadas
-- [ ] Triangulación multi-punto
-- [ ] Detección de Evil Twin avanzada
-- [ ] Análisis de patrones temporales
-- [ ] Integración con Wigle.net API (opcional)
-- [ ] Modo offline map (OpenStreetMap)
+### Reporting Security Vulnerabilities
+Please email security@sigint-radar.example.com with details. Do not create public issues for security concerns.
 
 ---
 
-## 📚 Recursos Adicionales
+## ⚠️ Disclaimer
 
-### Documentación Android
-- [WifiManager API](https://developer.android.com/reference/android/net/wifi/WifiManager)
-- [BluetoothLeScanner API](https://developer.android.com/reference/android/bluetooth/le/BluetoothLeScanner)
-- [Foreground Services](https://developer.android.com/guide/components/foreground-services)
+**SIGINT Radar is for educational and authorized security testing purposes only.**
 
-### RF y Propagación
-- [Path Loss Models](https://en.wikipedia.org/wiki/Log-distance_path_loss_model)
-- [WiFi RTT](https://source.android.com/devices/tech/connect/wifi-rtt)
-- [iBeacon Specification](https://developer.apple.com/ibeacon/)
+- Use only on networks you own or have permission to test
+- Comply with local laws and regulations regarding wireless monitoring
+- The developers are not responsible for misuse of this software
+- This tool should not be used for illegal surveillance or unauthorized access
 
-### Seguridad WiFi
-- [WPA3 Overview](https://www.wi-fi.org/discover-wi-fi/security)
-- [IEEE 802.11 Standards](https://www.ieee802.org/11/)
+**Always obtain proper authorization before security testing.**
 
 ---
 
-## 🤝 Contribuciones
+## 🌟 Star History
 
-Pull requests bienvenidas para:
-- Nuevas entradas en OUI database
-- Mejoras en algoritmos de distancia
-- Optimizaciones de performance
-- Traducciones
-- Corrección de bugs
+[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/sigint-radar&type=Date)](https://star-history.com/#yourusername/sigint-radar&Date)
 
 ---
 
-## 📄 Licencia
+<div align="center">
 
-MIT License - Ver archivo `LICENSE`
+**Made with ❤️ by the SIGINT Radar Team**
 
----
+[⬆ Back to Top](#-sigint-radar)
 
+</div>
 
-**⚠️ RECUERDA**: Respeta la privacidad ajena y las leyes locales sobre interceptación de comunicaciones.

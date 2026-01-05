@@ -4,6 +4,9 @@ import com.sigint.radar.database.RadarDatabase
 import com.sigint.radar.database.entities.KnownDeviceEntity
 import com.sigint.radar.model.DetectedDevice
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import org.json.JSONArray
+import org.json.JSONObject
 
 enum class TrustLevel {
     TRUSTED,    // Dispositivo confiable (ej: tu router, tu teléfono)
@@ -125,16 +128,69 @@ class KnownDeviceRepository(private val database: RadarDatabase) {
      * Exportar lista de dispositivos a formato importable
      */
     suspend fun exportDeviceList(): String {
-        val devices = getAllKnownDevices()
-        // TODO: Implementar exportación a JSON
-        return ""
+        val devices = knownDeviceDao.getAllKnownDevices()
+        val deviceList = devices.first()
+
+        val jsonArray = JSONArray()
+        deviceList.forEach { device ->
+            val jsonDevice = JSONObject().apply {
+                put("macAddress", device.macAddress)
+                put("customName", device.customName)
+                put("deviceType", device.deviceType)
+                put("trustLevel", device.trustLevel)
+                put("notes", device.notes)
+                put("firstSeen", device.firstSeen)
+                put("lastSeen", device.lastSeen)
+                put("seenCount", device.seenCount)
+                put("manufacturer", device.manufacturer)
+                put("alertEnabled", device.alertEnabled)
+            }
+            jsonArray.put(jsonDevice)
+        }
+
+        val result = JSONObject()
+        result.put("version", 1)
+        result.put("exportDate", System.currentTimeMillis())
+        result.put("devices", jsonArray)
+
+        return result.toString(2)
     }
 
     /**
      * Importar lista de dispositivos
      */
     suspend fun importDeviceList(jsonData: String) {
-        // TODO: Implementar importación desde JSON
+        try {
+            val root = JSONObject(jsonData)
+            val version = root.optInt("version", 1)
+
+            if (version != 1) {
+                throw IllegalArgumentException("Unsupported import version: $version")
+            }
+
+            val devices = root.getJSONArray("devices")
+
+            for (i in 0 until devices.length()) {
+                val deviceJson = devices.getJSONObject(i)
+
+                val device = KnownDeviceEntity(
+                    macAddress = deviceJson.getString("macAddress"),
+                    customName = deviceJson.optString("customName").takeIf { it.isNotEmpty() },
+                    deviceType = deviceJson.getString("deviceType"),
+                    trustLevel = deviceJson.getString("trustLevel"),
+                    notes = deviceJson.optString("notes").takeIf { it.isNotEmpty() },
+                    firstSeen = deviceJson.getLong("firstSeen"),
+                    lastSeen = deviceJson.getLong("lastSeen"),
+                    seenCount = deviceJson.getInt("seenCount"),
+                    manufacturer = deviceJson.optString("manufacturer").takeIf { it.isNotEmpty() },
+                    alertEnabled = deviceJson.getBoolean("alertEnabled")
+                )
+
+                knownDeviceDao.insert(device)
+            }
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Failed to import device list: ${e.message}", e)
+        }
     }
 }
 

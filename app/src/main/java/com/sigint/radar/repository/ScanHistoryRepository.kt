@@ -107,12 +107,60 @@ class ScanHistoryRepository(private val database: RadarDatabase) {
             commonDevices = commonDevices
         )
     }
+
+    /**
+     * Obtener estadísticas de dispositivos por fabricante
+     */
+    suspend fun getManufacturerStatistics(scanId: Long): Map<String, ManufacturerStats> {
+        val devices = deviceDao.getDevicesByScan(scanId).firstOrNull() ?: emptyList()
+
+        return devices.groupBy { it.manufacturer }
+            .mapValues { (manufacturer, deviceList) ->
+                ManufacturerStats(
+                    manufacturer = manufacturer,
+                    count = deviceList.size,
+                    avgRssi = deviceList.map { it.rssi }.average().toInt(),
+                    minDistance = deviceList.minOfOrNull { it.distanceMeters } ?: 0f,
+                    maxDistance = deviceList.maxOfOrNull { it.distanceMeters } ?: 0f,
+                    riskDistribution = deviceList.groupingBy { it.riskLevel }.eachCount()
+                )
+            }
+    }
+
+    /**
+     * Obtener estadísticas generales de todos los fabricantes
+     */
+    suspend fun getAllManufacturerStatistics(): Map<String, Int> {
+        val allMacs = deviceDao.getAllUniqueMacAddresses()
+        val manufacturerCounts = mutableMapOf<String, Int>()
+
+        allMacs.forEach { mac ->
+            val device = deviceDao.getLatestDeviceRecord(mac)
+            device?.let {
+                manufacturerCounts[it.manufacturer] =
+                    manufacturerCounts.getOrDefault(it.manufacturer, 0) + 1
+            }
+        }
+
+        return manufacturerCounts.toList()
+            .sortedByDescending { it.second }
+            .toMap()
+    }
 }
 
 data class ScanComparison(
     val newDevices: List<DeviceHistoryEntity>,
     val disappearedDevices: List<DeviceHistoryEntity>,
     val commonDevices: List<DeviceHistoryEntity>
+)
+
+data class ManufacturerStats(
+    val manufacturer: String,
+    val count: Int,
+    val avgRssi: Int,
+    val minDistance: Float,
+    val maxDistance: Float,
+    val riskDistribution: Map<String, Int>
 )
 
 

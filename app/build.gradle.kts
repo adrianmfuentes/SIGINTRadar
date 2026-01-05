@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.sigint.radar"
-    compileSdk = 36
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.sigint.radar"
@@ -70,7 +70,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     // WorkManager para escaneos periódicos
-    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.work.runtime.ktx.v281)
 
     // Para exportar CSV
     implementation(libs.commons.csv)

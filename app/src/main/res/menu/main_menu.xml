@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_filter"
+        android:title="⚙ Filters"
+        android:icon="@android:drawable/ic_menu_preferences"/>
+
+    <item
+        android:id="@+id/menu_stats"
+        android:title="📊 Statistics"
+        android:icon="@android:drawable/ic_menu_info_details"/>
+
+    <item
+        android:id="@+id/menu_heatmap"
+        android:title="🔥 Heat Map"
+        android:icon="@android:drawable/ic_dialog_map"/>
+
+    <item
+        android:id="@+id/menu_share"
+        android:title="📤 Share"
+        android:icon="@android:drawable/ic_menu_share"/>
+
+    <item
+        android:id="@+id/menu_debug"
+        android:title="⚡ Debug Mode"
+        android:icon="@android:drawable/ic_menu_edit"/>
+</menu>
+

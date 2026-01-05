@@ -170,6 +170,66 @@ class AttackDetector {
             }
         }
     }
+
+    /**
+     * Detecta posibles ataques Karma/Jasager
+     * Estos ataques responden a TODOS los probe requests con SSIDs falsos
+     */
+    fun detectKarmaJasagerAttacks(devices: List<DetectedDevice>): List<KarmaAttackCandidate> {
+        val wifiDevices = devices.filter { it.type == DetectedDevice.DeviceType.WIFI }
+        val candidates = mutableListOf<KarmaAttackCandidate>()
+
+        // Agrupar por MAC para detectar APs que responden a múltiples SSIDs
+        val devicesByMac = wifiDevices.groupBy { it.address }
+
+        devicesByMac.forEach { (mac, aps) ->
+            if (aps.size > 1) {
+                // Mismo MAC, diferentes SSIDs = muy sospechoso
+                val suspicionFactors = mutableListOf<String>()
+
+                // Factor 1: Múltiples SSIDs desde la misma MAC
+                suspicionFactors.add("Same MAC responding to ${aps.size} different SSIDs")
+
+                // Factor 2: SSIDs genéricos comunes
+                val genericSsids = aps.filter { ap ->
+                    ap.name.lowercase() in listOf(
+                        "home", "guest", "wifi", "free wifi", "public",
+                        "linksys", "default", "netgear", "dlink"
+                    )
+                }
+                if (genericSsids.isNotEmpty()) {
+                    suspicionFactors.add("${genericSsids.size} generic/common SSIDs detected")
+                }
+
+                // Factor 3: Canales muy diferentes
+                val channels = aps.mapNotNull { it.channel }.distinct()
+                if (channels.size > 2) {
+                    suspicionFactors.add("AP jumping between ${channels.size} different channels")
+                }
+
+                // Factor 4: Sin seguridad (open networks)
+                val openNetworks = aps.filter { ap ->
+                    ap.capabilities?.let { !it.contains("WPA") && !it.contains("WEP") } ?: false
+                }
+                if (openNetworks.size == aps.size) {
+                    suspicionFactors.add("All networks are OPEN (no encryption)")
+                }
+
+                if (suspicionFactors.size >= 2) {
+                    candidates.add(
+                        KarmaAttackCandidate(
+                            macAddress = mac,
+                            ssids = aps.map { it.name },
+                            suspicionFactors = suspicionFactors,
+                            suspicionLevel = (suspicionFactors.size.toFloat() / 4f).coerceIn(0f, 1f)
+                        )
+                    )
+                }
+            }
+        }
+
+        return candidates.sortedByDescending { it.suspicionLevel }
+    }
 }
 
 data class EvilTwinGroup(
@@ -188,5 +248,12 @@ data class BluetoothThreat(
     val device: DetectedDevice,
     val threatFactors: List<String>,
     val severityLevel: Float
+)
+
+data class KarmaAttackCandidate(
+    val macAddress: String,
+    val ssids: List<String>,
+    val suspicionFactors: List<String>,
+    val suspicionLevel: Float
 )
 

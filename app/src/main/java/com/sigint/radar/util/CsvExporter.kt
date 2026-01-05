@@ -1,5 +1,6 @@
 package com.sigint.radar.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.os.Environment
@@ -13,6 +14,7 @@ import java.util.*
 
 class CsvExporter(private val context: Context) {
 
+    @SuppressLint("DefaultLocale")
     fun exportToCSV(devices: List<DetectedDevice>): String {
         val stringWriter = StringWriter()
         val csvFormat = CSVFormat.DEFAULT.builder()
@@ -44,7 +46,7 @@ class CsvExporter(private val context: Context) {
                 device.riskLevel.name,
                 device.getRiskScore(),
                 device.channel ?: "",
-                device.frequency ?: "",
+                device.frequency,
                 device.channelWidth?.name ?: "",
                 device.capabilities ?: "",
                 device.is6GHz,
