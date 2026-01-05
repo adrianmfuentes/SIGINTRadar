@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
@@ -30,6 +29,12 @@ import com.sigint.radar.ui.DeviceAdapter
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import androidx.core.graphics.drawable.toDrawable
+import com.sigint.radar.database.RadarDatabase
+import com.sigint.radar.repository.KnownDeviceRepository
+import com.sigint.radar.repository.ScanHistoryRepository
+import com.sigint.radar.util.AttackDetector
+import com.sigint.radar.util.CsvExporter
+import com.sigint.radar.util.PatternDetector
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,6 +43,15 @@ class MainActivity : AppCompatActivity() {
     private var serviceBound = false
     private var debugMode = false
     private var currentDevices: List<DetectedDevice> = emptyList()
+    private var previousDevices: List<DetectedDevice> = emptyList()
+
+    // Database and repositories
+    private lateinit var database: RadarDatabase
+    private lateinit var scanHistoryRepo: ScanHistoryRepository
+    private lateinit var knownDeviceRepo: KnownDeviceRepository
+    private lateinit var patternDetector: PatternDetector
+    private lateinit var attackDetector: AttackDetector
+    private lateinit var csvExporter: CsvExporter
 
     private val deviceAdapter by lazy {
         DeviceAdapter { device -> showDeviceDetails(device) }
@@ -72,6 +86,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Inicializar base de datos y repositorios
+        database = RadarDatabase.getDatabase(this)
+        scanHistoryRepo = ScanHistoryRepository(database)
+        knownDeviceRepo = KnownDeviceRepository(database)
+        patternDetector = PatternDetector(database)
+        attackDetector = AttackDetector()
+        csvExporter = CsvExporter(this)
 
         setupUI()
         checkPermissions()
@@ -167,7 +189,7 @@ class MainActivity : AppCompatActivity() {
         startForegroundService(intent)
 
         // Bind al servicio
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+        bindService(intent, serviceConnection, BIND_AUTO_CREATE)
     }
 
     @SuppressLint("SetTextI18n")
@@ -207,14 +229,47 @@ class MainActivity : AppCompatActivity() {
     private fun observeDevices() {
         lifecycleScope.launch {
             scannerService?.devicesFlow?.collectLatest { devices ->
+                // Guardar dispositivos anteriores para detectar cambios
+                previousDevices = currentDevices
+
                 // Guardar dispositivos actuales
                 currentDevices = devices
 
+                // Detectar patrones y ataques en segundo plano
+                launch {
+                    try {
+                        // Detectar co-ocurrencias de dispositivos
+                        patternDetector.detectCoOccurrences(devices)
+
+                        // Detectar Evil Twins
+                        val evilTwins = attackDetector.detectEvilTwins(devices)
+                        if (evilTwins.isNotEmpty()) {
+                            showEvilTwinAlert(evilTwins)
+                        }
+
+                        // Detectar posibles deauth attacks
+                        if (previousDevices.isNotEmpty()) {
+                            val deauthSuspicion = attackDetector.detectDeauthPatterns(devices, previousDevices)
+                            deauthSuspicion?.let {
+                                if (it.suspicionLevel > 0.7f) {
+                                    showDeauthAlert(it)
+                                }
+                            }
+                        }
+
+                        // Actualizar dispositivos conocidos
+                        devices.forEach { device ->
+                            knownDeviceRepo.updateLastSeen(device.address)
+                        }
+                    } catch (_: Exception) {
+                        // Ignorar errores en detección de patrones
+                    }
+                }
+
                 // Aplicar filtros
-                val prefs = getSharedPreferences("filters", Context.MODE_PRIVATE)
+                val prefs = getSharedPreferences("filters", MODE_PRIVATE)
 
                 val filteredDevices = devices.filter { device ->
-                    // ...existing code...
                     val typePass = when (device.type) {
                         DetectedDevice.DeviceType.WIFI -> prefs.getBoolean("wifi", true)
                         DetectedDevice.DeviceType.BLUETOOTH,
@@ -231,7 +286,6 @@ class MainActivity : AppCompatActivity() {
                     typePass && riskPass
                 }
 
-                // ...existing code...
                 val sorted = filteredDevices.sortedWith(
                     compareBy<DetectedDevice> { it.riskLevel.ordinal }
                         .thenBy { it.distanceMeters }
@@ -427,27 +481,89 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSaveResultsDialog() {
-        val dialog = AlertDialog.Builder(this, R.style.DarkDialogTheme)
+        val options = arrayOf("Save JSON", "Save CSV", "Save Both", "Save to History Only", "Discard")
+
+        AlertDialog.Builder(this, R.style.DarkDialogTheme)
             .setTitle(R.string.save_scan_results)
             .setMessage(getString(R.string.save_results_message, currentDevices.size))
-            .setPositiveButton(R.string.save) { dialog, _ ->
-                saveResults()
-                performStopScanning()
+            .setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> { // JSON
+                        saveResultsJSON()
+                        saveToHistory()
+                        performStopScanning()
+                    }
+                    1 -> { // CSV
+                        saveResultsCSV()
+                        saveToHistory()
+                        performStopScanning()
+                    }
+                    2 -> { // Both
+                        saveResultsJSON()
+                        saveResultsCSV()
+                        saveToHistory()
+                        performStopScanning()
+                    }
+                    3 -> { // History only
+                        saveToHistory()
+                        performStopScanning()
+                    }
+                    4 -> { // Discard
+                        Toast.makeText(this, R.string.results_discarded, Toast.LENGTH_SHORT).show()
+                        performStopScanning()
+                    }
+                }
                 dialog.dismiss()
             }
-            .setNegativeButton(R.string.discard) { dialog, _ ->
-                Toast.makeText(this, R.string.results_discarded, Toast.LENGTH_SHORT).show()
-                performStopScanning()
-                dialog.dismiss()
-            }
+            .setNegativeButton(R.string.cancel, null)
             .setCancelable(false)
             .create()
+            .apply {
+                show()
+                getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.WHITE)
+            }
+    }
 
-        dialog.show()
+    private fun saveToHistory() {
+        lifecycleScope.launch {
+            try {
+                scanHistoryRepo.saveScan(currentDevices)
+                Toast.makeText(
+                    this@MainActivity,
+                    "Scan saved to history",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Error saving to history: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
 
-        // Aplicar color blanco a los botones
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.WHITE)
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.WHITE)
+    private fun saveResultsCSV() {
+        lifecycleScope.launch {
+            val result = csvExporter.exportAndSave(currentDevices)
+            result.onSuccess { path ->
+                Toast.makeText(
+                    this@MainActivity,
+                    "CSV saved: $path",
+                    Toast.LENGTH_LONG
+                ).show()
+            }.onFailure { e ->
+                Toast.makeText(
+                    this@MainActivity,
+                    "Error saving CSV: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    private fun saveResultsJSON() {
+        saveResults() // Usar el método existente
     }
 
     @SuppressLint("DefaultLocale")
@@ -550,7 +666,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             // Usar MediaStore para Android 10+ (API 29+) o carpeta de archivos de la app
-            val file = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // Android 10+ - Usar MediaStore
                 val resolver = contentResolver
                 val contentValues = android.content.ContentValues().apply {
@@ -608,7 +724,7 @@ class MainActivity : AppCompatActivity() {
     private fun applyFilters() {
         // Obtener todos los dispositivos del servicio
         scannerService?.devicesFlow?.value?.let { allDevices ->
-            val prefs = getSharedPreferences("filters", Context.MODE_PRIVATE)
+            val prefs = getSharedPreferences("filters", MODE_PRIVATE)
 
             // Aplicar filtros
             val filteredDevices = allDevices.filter { device ->
@@ -665,7 +781,7 @@ class MainActivity : AppCompatActivity() {
         val filterLow = dialogView.findViewById<CheckBox>(R.id.filterLow)
 
         // Cargar estado actual de filtros desde SharedPreferences
-        val prefs = getSharedPreferences("filters", Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences("filters", MODE_PRIVATE)
         filterWifi.isChecked = prefs.getBoolean("wifi", true)
         filterBluetooth.isChecked = prefs.getBoolean("bluetooth", true)
         filterCritical.isChecked = prefs.getBoolean("critical", true)
@@ -717,6 +833,59 @@ class MainActivity : AppCompatActivity() {
         // Aplicar color blanco a los botones
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.WHITE)
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.WHITE)
+    }
+
+    private fun showEvilTwinAlert(evilTwins: List<com.sigint.radar.util.EvilTwinGroup>) {
+        val message = buildString {
+            append("⚠️ Possible Evil Twin Attack Detected!\n\n")
+            evilTwins.forEach { group ->
+                append("SSID: ${group.ssid}\n")
+                append("Suspicious APs: ${group.accessPoints.size}\n")
+                append("Suspicion Level: ${(group.suspicionLevel * 100).toInt()}%\n")
+                append("MACs:\n")
+                group.accessPoints.forEach { ap ->
+                    append("  • ${ap.address} (${ap.manufacturer})\n")
+                }
+                append("\n")
+            }
+        }
+
+        AlertDialog.Builder(this, R.style.DarkDialogTheme)
+            .setTitle("⚠️ SECURITY ALERT")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .apply {
+                show()
+                getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.WHITE)
+            }
+    }
+
+    private fun showDeauthAlert(suspicion: com.sigint.radar.util.DeauthSuspicion) {
+        val message = """
+            ⚠️ Possible Deauthentication Attack!
+            
+            ${suspicion.droppedDeviceCount} WiFi devices disappeared suddenly.
+            Drop Rate: ${(suspicion.dropRate * 100).toInt()}%
+            Suspicion Level: ${(suspicion.suspicionLevel * 100).toInt()}%
+            
+            This could indicate:
+            • Deauth attack in progress
+            • Jamming attack
+            • Normal network issues
+            
+            Monitor the situation carefully.
+        """.trimIndent()
+
+        AlertDialog.Builder(this, R.style.DarkDialogTheme)
+            .setTitle("⚠️ ATTACK DETECTED")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .create()
+            .apply {
+                show()
+                getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.WHITE)
+            }
     }
 }
 
