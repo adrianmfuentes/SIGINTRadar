@@ -427,7 +427,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSaveResultsDialog() {
-        AlertDialog.Builder(this, R.style.DarkDialogTheme)
+        val dialog = AlertDialog.Builder(this, R.style.DarkDialogTheme)
             .setTitle(R.string.save_scan_results)
             .setMessage(getString(R.string.save_results_message, currentDevices.size))
             .setPositiveButton(R.string.save) { dialog, _ ->
@@ -441,7 +441,13 @@ class MainActivity : AppCompatActivity() {
                 dialog.dismiss()
             }
             .setCancelable(false)
-            .show()
+            .create()
+
+        dialog.show()
+
+        // Aplicar color blanco a los botones
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.WHITE)
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.WHITE)
     }
 
     @SuppressLint("DefaultLocale")
@@ -667,7 +673,7 @@ class MainActivity : AppCompatActivity() {
         filterMedium.isChecked = prefs.getBoolean("medium", true)
         filterLow.isChecked = prefs.getBoolean("low", true)
 
-        builder.setView(dialogView)
+        val dialog = builder.setView(dialogView)
             .setTitle(R.string.filter_title)
             .setPositiveButton(R.string.apply) { dialog, _ ->
                 // Guardar configuración de filtros
@@ -704,7 +710,13 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton(R.string.cancel) { dialog, _ ->
                 dialog.dismiss()
             }
-            .show()
+            .create()
+
+        dialog.show()
+
+        // Aplicar color blanco a los botones
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.WHITE)
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.WHITE)
     }
 }
 

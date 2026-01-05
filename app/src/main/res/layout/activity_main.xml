@@ -300,7 +300,8 @@
             android:id="@+id/btnDebugMode"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:text="🐛"
+            android:text="⚡"
+            android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:backgroundTint="#FF9500"
             android:contentDescription="Modo debug"/>
