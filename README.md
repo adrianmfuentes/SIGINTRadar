@@ -461,28 +461,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 ```
-
----
-
-## 👏 Acknowledgments
-
-- **OUI Database**: [IEEE Registration Authority](https://standards.ieee.org/develop/regauth/oui/)
-- **Icons**: Material Design Icons
-- **Inspiration**: Military radar systems and SIGINT operations
-- **Community**: Android security researchers and contributors
-
----
-
-## 📞 Support
-
-### Getting Help
-- **Issues**: [GitHub Issues](https://github.com/yourusername/sigint-radar/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/sigint-radar/discussions)
-- **Email**: support@sigint-radar.example.com
-
-### Reporting Security Vulnerabilities
-Please email security@sigint-radar.example.com with details. Do not create public issues for security concerns.
-
 ---
 
 ## ⚠️ Disclaimer
@@ -500,13 +478,11 @@ Please email security@sigint-radar.example.com with details. Do not create publi
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=yourusername/sigint-radar&type=Date)](https://star-history.com/#yourusername/sigint-radar&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=adrianmfuentes/SIGINTRadar&type=Date)](https://star-history.com/adrianmfuentes/SIGINTRadar&Date)
 
 ---
 
 <div align="center">
-
-**Made with ❤️ by the SIGINT Radar Team**
 
 [⬆ Back to Top](#-sigint-radar)
 
