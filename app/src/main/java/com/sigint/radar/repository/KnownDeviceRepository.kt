@@ -156,43 +156,73 @@ class KnownDeviceRepository(private val database: RadarDatabase) {
         return result.toString(2)
     }
 
+    private val macAddressRegex = Regex("^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$")
+
     /**
-     * Importar lista de dispositivos
+     * Importar lista de dispositivos. Devuelve cuántos dispositivos se importaron
+     * y cuántas filas inválidas se descartaron, en vez de fallar toda la importación
+     * por una sola entrada corrupta.
      */
-    suspend fun importDeviceList(jsonData: String) {
-        try {
-            val root = JSONObject(jsonData)
-            val version = root.optInt("version", 1)
-
-            if (version != 1) {
-                throw IllegalArgumentException("Unsupported import version: $version")
-            }
-
-            val devices = root.getJSONArray("devices")
-
-            for (i in 0 until devices.length()) {
-                val deviceJson = devices.getJSONObject(i)
-
-                val device = KnownDeviceEntity(
-                    macAddress = deviceJson.getString("macAddress"),
-                    customName = deviceJson.optString("customName").takeIf { it.isNotEmpty() },
-                    deviceType = deviceJson.getString("deviceType"),
-                    trustLevel = deviceJson.getString("trustLevel"),
-                    notes = deviceJson.optString("notes").takeIf { it.isNotEmpty() },
-                    firstSeen = deviceJson.getLong("firstSeen"),
-                    lastSeen = deviceJson.getLong("lastSeen"),
-                    seenCount = deviceJson.getInt("seenCount"),
-                    manufacturer = deviceJson.optString("manufacturer").takeIf { it.isNotEmpty() },
-                    alertEnabled = deviceJson.getBoolean("alertEnabled")
-                )
-
-                knownDeviceDao.insert(device)
-            }
+    suspend fun importDeviceList(jsonData: String): ImportResult {
+        val root = try {
+            JSONObject(jsonData)
         } catch (e: Exception) {
-            throw IllegalArgumentException("Failed to import device list: ${e.message}", e)
+            throw IllegalArgumentException("Invalid JSON: ${e.message}", e)
         }
+
+        val version = root.optInt("version", 1)
+        if (version != 1) {
+            throw IllegalArgumentException("Unsupported import version: $version")
+        }
+
+        val devices = root.optJSONArray("devices")
+            ?: throw IllegalArgumentException("Missing 'devices' array")
+
+        var imported = 0
+        var skipped = 0
+
+        for (i in 0 until devices.length()) {
+            val deviceJson = devices.optJSONObject(i)
+            if (deviceJson == null) {
+                skipped++
+                continue
+            }
+
+            val macAddress = deviceJson.optString("macAddress")
+            val trustLevelRaw = deviceJson.optString("trustLevel")
+            val deviceType = deviceJson.optString("deviceType")
+
+            val isValidMac = macAddressRegex.matches(macAddress)
+            val isValidTrustLevel = TrustLevel.entries.any { it.name == trustLevelRaw }
+            val isValidDeviceType = DetectedDevice.DeviceType.entries.any { it.name == deviceType }
+
+            if (!isValidMac || !isValidTrustLevel || !isValidDeviceType) {
+                skipped++
+                continue
+            }
+
+            val device = KnownDeviceEntity(
+                macAddress = macAddress,
+                customName = deviceJson.optString("customName").takeIf { it.isNotEmpty() },
+                deviceType = deviceType,
+                trustLevel = trustLevelRaw,
+                notes = deviceJson.optString("notes").takeIf { it.isNotEmpty() },
+                firstSeen = deviceJson.optLong("firstSeen", System.currentTimeMillis()),
+                lastSeen = deviceJson.optLong("lastSeen", System.currentTimeMillis()),
+                seenCount = deviceJson.optInt("seenCount", 1),
+                manufacturer = deviceJson.optString("manufacturer").takeIf { it.isNotEmpty() },
+                alertEnabled = deviceJson.optBoolean("alertEnabled", false)
+            )
+
+            knownDeviceDao.insert(device)
+            imported++
+        }
+
+        return ImportResult(imported, skipped)
     }
 }
+
+data class ImportResult(val imported: Int, val skipped: Int)
 
 data class DeviceStatistics(
     val trusted: Int,

@@ -72,7 +72,7 @@ class PatternDetector(private val database: RadarDatabase) {
         // Agrupar por fabricante y tipo
         val groupedDevices = devices.groupBy { "${it.manufacturer}_${it.type.name}" }
 
-        groupedDevices.forEach { (key, deviceGroup) ->
+        groupedDevices.forEach { (_, deviceGroup) ->
             if (deviceGroup.size > 1) {
                 // Múltiples MACs del mismo fabricante/tipo podrían indicar randomización
                 val isRandomized = deviceGroup.any { device ->

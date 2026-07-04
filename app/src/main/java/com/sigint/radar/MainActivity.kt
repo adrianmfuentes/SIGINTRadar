@@ -32,19 +32,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.core.graphics.drawable.toDrawable
 import com.sigint.radar.database.RadarDatabase
+import com.sigint.radar.database.entities.KnownDeviceEntity
+import com.sigint.radar.database.entities.ScanHistoryEntity
 import com.sigint.radar.repository.KnownDeviceRepository
 import com.sigint.radar.repository.ScanHistoryRepository
+import com.sigint.radar.repository.TrustLevel
 import com.sigint.radar.util.AttackDetector
 import com.sigint.radar.util.CsvExporter
 import com.sigint.radar.util.PatternDetector
 import androidx.core.graphics.toColorInt
+import kotlinx.coroutines.flow.first
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var scannerService: ScannerService? = null
     private var serviceBound = false
-    private var debugMode = false
     private var currentDevices: List<DetectedDevice> = emptyList()
     private var previousDevices: List<DetectedDevice> = emptyList()
 
@@ -140,6 +143,10 @@ class MainActivity : AppCompatActivity() {
         val popup = android.widget.PopupMenu(this, view)
         popup.menuInflater.inflate(R.menu.main_menu, popup.menu)
 
+        val backgroundScanEnabled = getSharedPreferences("settings", MODE_PRIVATE)
+            .getBoolean("background_scan_enabled", false)
+        popup.menu.findItem(R.id.menu_background_scan).isChecked = backgroundScanEnabled
+
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_filter -> {
@@ -158,14 +165,44 @@ class MainActivity : AppCompatActivity() {
                     shareResults()
                     true
                 }
-                R.id.menu_debug -> {
-                    toggleDebugMode()
+                R.id.menu_known_devices -> {
+                    showKnownDevicesDialog()
+                    true
+                }
+                R.id.menu_history -> {
+                    showScanHistoryDialog()
+                    true
+                }
+                R.id.menu_security_report -> {
+                    showSecurityReportDialog()
+                    true
+                }
+                R.id.menu_background_scan -> {
+                    toggleBackgroundScan()
                     true
                 }
                 else -> false
             }
         }
         popup.show()
+    }
+
+    private fun toggleBackgroundScan() {
+        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        val newValue = !prefs.getBoolean("background_scan_enabled", false)
+        prefs.edit().putBoolean("background_scan_enabled", newValue).apply()
+
+        if (newValue) {
+            com.sigint.radar.worker.PeriodicScanWorker.schedule(applicationContext)
+            Toast.makeText(
+                this,
+                "Background scanning enabled (~every 15 min, saves to history)",
+                Toast.LENGTH_LONG
+            ).show()
+        } else {
+            com.sigint.radar.worker.PeriodicScanWorker.cancel(applicationContext)
+            Toast.makeText(this, "Background scanning disabled", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun toggleHeatMap() {
@@ -176,21 +213,6 @@ class MainActivity : AppCompatActivity() {
             if (isEnabled) "Heat Map Enabled" else "Heat Map Disabled",
             Toast.LENGTH_SHORT
         ).show()
-    }
-
-    private fun toggleDebugMode() {
-        debugMode = !debugMode
-        Toast.makeText(
-            this,
-            if (debugMode) getString(R.string.debug_mode_enabled) else getString(R.string.real_mode_enabled),
-            Toast.LENGTH_SHORT
-        ).show()
-
-        // Si está escaneando, reiniciar con el nuevo modo
-        if (binding.scanButton.text == "Stop Scan") {
-            stopScanning()
-            checkPermissions()
-        }
     }
 
     private fun checkPermissions() {
@@ -227,9 +249,8 @@ class MainActivity : AppCompatActivity() {
         // Iniciar animación del radar
         binding.radarView.startScanning()
 
-        // Iniciar servicio con modo debug
+        // Iniciar servicio de escaneo
         val intent = Intent(this, ScannerService::class.java)
-        intent.putExtra("DEBUG_MODE", debugMode)
         startForegroundService(intent)
 
         // Bind al servicio
@@ -252,6 +273,7 @@ class MainActivity : AppCompatActivity() {
 
         // Detener animación del radar
         binding.radarView.stopScanning()
+        binding.scanStatusText.visibility = android.view.View.GONE
 
         if (serviceBound) {
             unbindService(serviceConnection)
@@ -271,6 +293,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeDevices() {
+        lifecycleScope.launch {
+            scannerService?.statusFlow?.collectLatest { status ->
+                val message = when {
+                    !status.bluetoothEnabled -> "🔵 Bluetooth is off - only WiFi devices will show up"
+                    status.wifiThrottled -> "⏳ WiFi scan throttled by Android - showing cached results"
+                    else -> null
+                }
+                binding.scanStatusText.text = message ?: ""
+                binding.scanStatusText.visibility =
+                    if (message != null) android.view.View.VISIBLE else android.view.View.GONE
+            }
+        }
+
         lifecycleScope.launch {
             scannerService?.devicesFlow?.collectLatest { devices ->
                 // Guardar dispositivos anteriores para detectar cambios
@@ -413,10 +448,10 @@ class MainActivity : AppCompatActivity() {
             wifiCountText.text = getString(R.string.wifi_count, wifi)
             bluetoothCountText.text = getString(R.string.ble_count, bluetooth)
 
-            criticalCountText?.text = critical.toString()
-            highCountText?.text = high.toString()
-            mediumCountText?.text = medium.toString()
-            lowCountText?.text = low.toString()
+            criticalCountText.text = critical.toString()
+            highCountText.text = high.toString()
+            mediumCountText.text = medium.toString()
+            lowCountText.text = low.toString()
         }
     }
 
@@ -495,6 +530,11 @@ class MainActivity : AppCompatActivity() {
                 detailRiskFactorsLayout.visibility = android.view.View.GONE
             }
 
+            // Mark as known device
+            detailMarkKnownButton.setOnClickListener {
+                showMarkAsKnownDialog(device)
+            }
+
             // Close button
             detailCloseButton.setOnClickListener {
                 dialog.dismiss()
@@ -502,6 +542,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    private fun showMarkAsKnownDialog(device: DetectedDevice) {
+        val trustLevels = arrayOf("Trusted ✅", "Suspicious ⚠️", "Blocked 🚫", "Unknown ⬜")
+        val values = arrayOf(TrustLevel.TRUSTED, TrustLevel.SUSPICIOUS, TrustLevel.BLOCKED, TrustLevel.UNKNOWN)
+
+        AlertDialog.Builder(this, R.style.DarkDialogTheme)
+            .setTitle("Mark \"${device.name}\" as:")
+            .setItems(trustLevels) { _, which ->
+                lifecycleScope.launch {
+                    knownDeviceRepo.addOrUpdateDevice(device, values[which])
+                    Toast.makeText(
+                        this@MainActivity,
+                        "${device.name} marked as ${values[which].name}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .create()
+            .apply {
+                show()
+                getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(Color.WHITE)
+            }
     }
 
     @SuppressLint("SetTextI18n")
@@ -1263,6 +1327,253 @@ class MainActivity : AppCompatActivity() {
         }
 
         dialog.show()
+    }
+
+    // ==================== Known Devices ====================
+
+    private fun showKnownDevicesDialog() {
+        val dialog = Dialog(this, R.style.DarkDialogTheme)
+        dialog.setContentView(R.layout.dialog_known_devices)
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.92).toInt(),
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        val container = dialog.findViewById<android.widget.LinearLayout>(R.id.knownDevicesContainer)
+        val emptyState = dialog.findViewById<android.widget.TextView>(R.id.tvEmptyState)
+        val btnClose = dialog.findViewById<android.widget.Button>(R.id.btnClose)
+
+        val collectJob = lifecycleScope.launch {
+            knownDeviceRepo.getAllKnownDevices().collectLatest { devices ->
+                renderKnownDevices(container, emptyState, devices)
+            }
+        }
+
+        dialog.setOnDismissListener { collectJob.cancel() }
+        btnClose.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
+    @SuppressLint("SetTextI18n", "DefaultLocale")
+    private fun renderKnownDevices(
+        container: android.widget.LinearLayout,
+        emptyState: android.widget.TextView,
+        devices: List<KnownDeviceEntity>
+    ) {
+        container.removeAllViews()
+        emptyState.visibility = if (devices.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+
+        val trustCycle = listOf(TrustLevel.UNKNOWN, TrustLevel.TRUSTED, TrustLevel.SUSPICIOUS, TrustLevel.BLOCKED)
+
+        devices.forEach { entity ->
+            val itemView = layoutInflater.inflate(R.layout.item_known_device, container, false)
+
+            val tvDeviceName = itemView.findViewById<android.widget.TextView>(R.id.tvDeviceName)
+            val tvMacAddress = itemView.findViewById<android.widget.TextView>(R.id.tvMacAddress)
+            val tvMeta = itemView.findViewById<android.widget.TextView>(R.id.tvMeta)
+            val tvTrustBadge = itemView.findViewById<android.widget.TextView>(R.id.tvTrustBadge)
+            val btnCycleTrust = itemView.findViewById<android.widget.Button>(R.id.btnCycleTrust)
+            val btnToggleAlert = itemView.findViewById<android.widget.Button>(R.id.btnToggleAlert)
+            val btnDelete = itemView.findViewById<android.widget.Button>(R.id.btnDelete)
+
+            tvDeviceName.text = entity.customName ?: entity.manufacturer ?: entity.deviceType
+            tvMacAddress.text = entity.macAddress
+            tvMeta.text = "Seen ${entity.seenCount}x | Last seen ${
+                java.text.SimpleDateFormat("MMM d, HH:mm", java.util.Locale.getDefault())
+                    .format(java.util.Date(entity.lastSeen))
+            }"
+
+            val trustLevel = TrustLevel.entries.firstOrNull { it.name == entity.trustLevel } ?: TrustLevel.UNKNOWN
+            tvTrustBadge.text = trustLevel.name
+            tvTrustBadge.setBackgroundColor(
+                when (trustLevel) {
+                    TrustLevel.TRUSTED -> "#00E676".toColorInt()
+                    TrustLevel.SUSPICIOUS -> "#FFB300".toColorInt()
+                    TrustLevel.BLOCKED -> "#FF1744".toColorInt()
+                    TrustLevel.UNKNOWN -> "#808080".toColorInt()
+                }
+            )
+
+            btnToggleAlert.text = if (entity.alertEnabled) "🔔 Alerts On" else "🔕 Alerts Off"
+
+            btnCycleTrust.setOnClickListener {
+                val nextLevel = trustCycle[(trustCycle.indexOf(trustLevel) + 1) % trustCycle.size]
+                lifecycleScope.launch { knownDeviceRepo.updateTrustLevel(entity.macAddress, nextLevel) }
+            }
+
+            btnToggleAlert.setOnClickListener {
+                lifecycleScope.launch {
+                    knownDeviceRepo.setAlertEnabled(entity.macAddress, !entity.alertEnabled)
+                }
+            }
+
+            btnDelete.setOnClickListener {
+                lifecycleScope.launch { knownDeviceRepo.deleteDevice(entity) }
+            }
+
+            container.addView(itemView)
+        }
+    }
+
+    // ==================== Scan History ====================
+
+    private fun showScanHistoryDialog() {
+        val dialog = Dialog(this, R.style.DarkDialogTheme)
+        dialog.setContentView(R.layout.dialog_scan_history)
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.92).toInt(),
+            android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        val container = dialog.findViewById<android.widget.LinearLayout>(R.id.historyContainer)
+        val emptyState = dialog.findViewById<android.widget.TextView>(R.id.tvEmptyState)
+        val btnClose = dialog.findViewById<android.widget.Button>(R.id.btnClose)
+        val btnCleanup = dialog.findViewById<android.widget.Button>(R.id.btnCleanup)
+
+        val collectJob = lifecycleScope.launch {
+            scanHistoryRepo.getRecentScans(30).collectLatest { scans ->
+                renderScanHistory(container, emptyState, scans)
+            }
+        }
+
+        btnCleanup.setOnClickListener {
+            lifecycleScope.launch {
+                val removed = scanHistoryRepo.deleteOldScans(30)
+                Toast.makeText(this@MainActivity, "Removed $removed scan(s) older than 30 days", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.setOnDismissListener { collectJob.cancel() }
+        btnClose.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun renderScanHistory(
+        container: android.widget.LinearLayout,
+        emptyState: android.widget.TextView,
+        scans: List<ScanHistoryEntity>
+    ) {
+        container.removeAllViews()
+        emptyState.visibility = if (scans.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+
+        scans.forEach { scan ->
+            val itemView = layoutInflater.inflate(R.layout.item_scan_history, container, false)
+
+            val tvTimestamp = itemView.findViewById<android.widget.TextView>(R.id.tvTimestamp)
+            val tvSummary = itemView.findViewById<android.widget.TextView>(R.id.tvSummary)
+            val tvRiskSummary = itemView.findViewById<android.widget.TextView>(R.id.tvRiskSummary)
+            val btnViewDevices = itemView.findViewById<android.widget.Button>(R.id.btnViewDevices)
+            val btnDeleteScan = itemView.findViewById<android.widget.Button>(R.id.btnDeleteScan)
+
+            tvTimestamp.text = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
+                .format(java.util.Date(scan.timestamp))
+            tvSummary.text = "${scan.totalDevices} devices | ${scan.wifiCount} WiFi | ${scan.bluetoothCount} BLE"
+            tvRiskSummary.text = "Critical: ${scan.criticalCount} | High: ${scan.highCount} | " +
+                "Medium: ${scan.mediumCount} | Low: ${scan.lowCount}"
+
+            btnViewDevices.setOnClickListener {
+                lifecycleScope.launch {
+                    val devices = scanHistoryRepo.getDevicesByScan(scan.id).first()
+                    val riskOrder = listOf("CRITICAL", "HIGH", "MEDIUM", "LOW")
+                    val message = if (devices.isEmpty()) {
+                        "No device details stored for this scan."
+                    } else {
+                        devices.sortedBy { riskOrder.indexOf(it.riskLevel) }.joinToString("\n\n") { d ->
+                            "${d.name}\n${d.macAddress}\n${d.manufacturer} | ${d.riskLevel} (${d.riskScore}/100)"
+                        }
+                    }
+                    AlertDialog.Builder(this@MainActivity, R.style.DarkDialogTheme)
+                        .setTitle("Devices in this scan")
+                        .setMessage(message)
+                        .setPositiveButton("OK", null)
+                        .create()
+                        .apply {
+                            show()
+                            getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.WHITE)
+                        }
+                }
+            }
+
+            btnDeleteScan.setOnClickListener {
+                lifecycleScope.launch { scanHistoryRepo.deleteScan(scan) }
+            }
+
+            container.addView(itemView)
+        }
+    }
+
+    // ==================== Security Report ====================
+
+    private fun showSecurityReportDialog() {
+        if (currentDevices.isEmpty()) {
+            Toast.makeText(this, "No devices detected yet. Start scanning first.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        lifecycleScope.launch {
+            val trustedMacs = knownDeviceRepo.getAllKnownDevices().first()
+                .filter { it.trustLevel == TrustLevel.TRUSTED.name }
+                .map { it.macAddress }
+                .toSet()
+
+            val rogueAPs = attackDetector.detectRogueAPs(currentDevices, trustedMacs)
+            val btThreats = attackDetector.detectBluetoothThreats(currentDevices)
+            val monitorDevices = attackDetector.detectMonitorModeDevices(currentDevices)
+            val macRandomization = patternDetector.detectMacRandomization(currentDevices)
+            val trackingBeacons = patternDetector.detectTrackingBeacons(currentDevices)
+
+            val message = buildString {
+                if (rogueAPs.isEmpty() && btThreats.isEmpty() && monitorDevices.isEmpty() &&
+                    macRandomization.isEmpty() && trackingBeacons.isEmpty()
+                ) {
+                    append("✅ No additional threats detected among the ${currentDevices.size} device(s) currently visible.")
+                }
+
+                if (rogueAPs.isNotEmpty()) {
+                    append("📡 Possible Rogue Access Points (${rogueAPs.size}):\n")
+                    rogueAPs.forEach { append("  • ${it.name} (${it.address})\n") }
+                    append("\n")
+                }
+
+                if (btThreats.isNotEmpty()) {
+                    append("🔵 Bluetooth Threats (${btThreats.size}):\n")
+                    btThreats.forEach { threat ->
+                        append("  • ${threat.device.name}: ${threat.threatFactors.joinToString(", ")}\n")
+                    }
+                    append("\n")
+                }
+
+                if (monitorDevices.isNotEmpty()) {
+                    append("📶 Monitor-Mode Capable Adapters (${monitorDevices.size}):\n")
+                    monitorDevices.forEach { append("  • ${it.name} (${it.manufacturer})\n") }
+                    append("\n")
+                }
+
+                if (macRandomization.isNotEmpty()) {
+                    append("🔀 MAC Randomization Detected (${macRandomization.size} group(s)):\n")
+                    macRandomization.forEach {
+                        append("  • ${it.manufacturer} ${it.deviceType}: ${it.macAddresses.size} addresses\n")
+                    }
+                    append("\n")
+                }
+
+                if (trackingBeacons.isNotEmpty()) {
+                    append("📍 Tracking Beacons (${trackingBeacons.size}):\n")
+                    trackingBeacons.forEach { append("  • ${it.name} (${it.address})\n") }
+                }
+            }
+
+            AlertDialog.Builder(this@MainActivity, R.style.DarkDialogTheme)
+                .setTitle("🛡 Security Report")
+                .setMessage(message.trim())
+                .setPositiveButton("OK", null)
+                .create()
+                .apply {
+                    show()
+                    getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.WHITE)
+                }
+        }
     }
 }
 

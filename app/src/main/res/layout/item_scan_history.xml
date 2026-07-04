@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:background="#1A1A1A"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/tvTimestamp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="2026-01-01 12:00:00"
+        android:textColor="#00FF00"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:fontFamily="monospace"/>
+
+    <TextView
+        android:id="@+id/tvSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="12 devices | 8 WiFi | 4 BLE"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:layout_marginTop="4dp"/>
+
+    <TextView
+        android:id="@+id/tvRiskSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Critical: 0 | High: 1 | Medium: 3 | Low: 8"
+        android:textColor="#B0B8C8"
+        android:textSize="12sp"
+        android:layout_marginTop="2dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btnViewDevices"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:text="View Devices"
+            android:textSize="11sp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2E1A3E"/>
+
+        <Button
+            android:id="@+id/btnDeleteScan"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:text="🗑 Delete"
+            android:textSize="11sp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#3E1A1A"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+</LinearLayout>

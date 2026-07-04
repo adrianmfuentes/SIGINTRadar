@@ -220,6 +220,17 @@
                 android:textSize="12sp"
                 android:fontFamily="monospace"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/scanStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFAA00"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            tools:text="⏳ WiFi scan throttled by Android - showing cached results"/>
     </LinearLayout>
 
     <!-- Guideline dinámica para controlar tamaño radar vs lista -->

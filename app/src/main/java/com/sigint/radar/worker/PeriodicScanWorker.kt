@@ -7,7 +7,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.sigint.radar.MainActivity
 import com.sigint.radar.R
@@ -18,6 +22,8 @@ import com.sigint.radar.repository.ScanHistoryRepository
 import com.sigint.radar.scanner.BluetoothScanner
 import com.sigint.radar.scanner.WifiScanner
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withTimeoutOrNull
+import java.util.concurrent.TimeUnit
 
 /**
  * Worker para escaneos periódicos en segundo plano
@@ -32,38 +38,48 @@ class PeriodicScanWorker(
     private val knownDeviceRepo = KnownDeviceRepository(database)
 
     override suspend fun doWork(): Result {
-        try {
-            // Realizar escaneo
+        return try {
+            // Realizar escaneo real (WiFi + BLE, respetando permisos en tiempo de ejecución)
             val devices = performScan()
 
-            // Guardar en historial
-            scanHistoryRepo.saveScan(devices, notes = "Automatic periodic scan")
+            // Guardar en historial solo si se detectó algo (evita ruido en el historial)
+            if (devices.isNotEmpty()) {
+                scanHistoryRepo.saveScan(devices, notes = "Automatic background scan")
+            }
 
             // Verificar dispositivos con alertas
             checkAlerts(devices)
 
-            return Result.success()
+            Result.success()
         } catch (e: Exception) {
-            return Result.failure()
+            Result.retry()
         }
     }
 
     private suspend fun performScan(): List<DetectedDevice> {
-        val allDevices = mutableListOf<DetectedDevice>()
+        val allDevices = mutableMapOf<String, DetectedDevice>()
 
-        // TODO: Implement background scanning
-        // Background scanning requires different approach than foreground scanning
-        // For now, return empty list
-
-        // Escanear WiFi
         try {
-            // val wifiScanner = WifiScanner(applicationContext)
-            // Background WiFi scanning has limitations on Android 9+
+            val wifiScanner = WifiScanner(applicationContext)
+            // El sistema puede no entregar el broadcast de resultados en background
+            // (Doze, restricciones de fondo); con timeout evitamos bloquear el worker.
+            val wifiDevices = withTimeoutOrNull(20_000L) { wifiScanner.scan() } ?: emptyList()
+            wifiDevices.forEach { allDevices[it.address] = it }
+            wifiScanner.stop()
         } catch (e: Exception) {
-            // Ignorar errores de permisos en background
+            // Ignorar errores de permisos o del adaptador WiFi
         }
 
-        return allDevices
+        try {
+            val bluetoothScanner = BluetoothScanner(applicationContext)
+            val bleDevices = withTimeoutOrNull(10_000L) { bluetoothScanner.scan() } ?: emptyList()
+            bleDevices.forEach { allDevices[it.address] = it }
+            bluetoothScanner.stop()
+        } catch (e: Exception) {
+            // Ignorar errores de permisos o del adaptador Bluetooth
+        }
+
+        return allDevices.values.toList()
     }
 
     private suspend fun checkAlerts(devices: List<DetectedDevice>) {
@@ -154,6 +170,27 @@ class PeriodicScanWorker(
     companion object {
         private const val CHANNEL_ID = "sigint_alerts"
         private const val NOTIFICATION_ID_HIGH_RISK = 1000
+        private const val WORK_NAME = "periodic_scan_work"
+
+        /** Programa escaneos periódicos en segundo plano (mínimo permitido por WorkManager: 15 min). */
+        fun schedule(context: Context) {
+            val constraints = Constraints.Builder()
+                .setRequiresBatteryNotLow(true)
+                .build()
+
+            val request = PeriodicWorkRequestBuilder<PeriodicScanWorker>(15, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+                WORK_NAME,
+                ExistingPeriodicWorkPolicy.UPDATE,
+                request
+            )
+        }
+
+        fun cancel(context: Context) {
+            WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
+        }
     }
 }
-

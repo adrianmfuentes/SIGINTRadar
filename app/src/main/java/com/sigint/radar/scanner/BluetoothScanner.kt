@@ -191,6 +191,8 @@ class BluetoothScanner(private val context: Context) {
         return ((rssi + 100) * 100 / 70).coerceIn(0, 100)
     }
 
+    fun isBluetoothEnabled(): Boolean = bluetoothAdapter?.isEnabled == true
+
     fun stop() {
         // Cleanup si es necesario
     }

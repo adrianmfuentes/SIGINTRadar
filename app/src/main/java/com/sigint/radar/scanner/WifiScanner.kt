@@ -22,6 +22,12 @@ class WifiScanner(private val context: Context) {
 
     private var scanReceiver: BroadcastReceiver? = null
 
+    // Android throttles WifiManager.startScan() to ~4 calls per 2 minutes (API 28+).
+    // When throttled, startScan() returns false and we fall back to cached results -
+    // this flag lets callers know the returned list isn't from a fresh scan.
+    var lastScanThrottled: Boolean = false
+        private set
+
     suspend fun scan(): List<DetectedDevice> = suspendCancellableCoroutine { continuation ->
         if (ContextCompat.checkSelfPermission(
                 context,
@@ -49,13 +55,14 @@ class WifiScanner(private val context: Context) {
                     context.unregisterReceiver(this)
                     scanReceiver = null
 
+                    lastScanThrottled = false
                     continuation.resume(devices)
                 }
             }
         }
 
         val filter = IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-        context.registerReceiver(scanReceiver, filter)
+        ContextCompat.registerReceiver(context, scanReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
 
         val success = wifiManager.startScan()
         if (!success) {
@@ -77,6 +84,7 @@ class WifiScanner(private val context: Context) {
             context.unregisterReceiver(scanReceiver!!)
             scanReceiver = null
 
+            lastScanThrottled = true
             continuation.resume(devices)
         }
 

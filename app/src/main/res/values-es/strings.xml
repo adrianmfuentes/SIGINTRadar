@@ -22,7 +22,6 @@
     <string name="scan_description">Iniciar o detener escaneo</string>
     <string name="help_button">Ayuda</string>
     <string name="help_description">Ayuda</string>
-    <string name="debug_mode">Modo debug</string>
     <string name="filters">Filtros</string>
     <string name="filters_description">Filtros</string>
     <string name="close_button">CERRAR</string>
@@ -33,7 +32,6 @@
     <!-- Iconos -->
     <string name="help_icon">\?</string>
     <string name="settings_icon">⚙</string>
-    <string name="debug_icon">🐛</string>
 
     <!-- Niveles de Riesgo -->
     <string name="risk_critical">CRÍTICO</string>
@@ -98,8 +96,12 @@
         <b>Botones:</b><br/>
         • <font color="#00E676">Verde</font>: Iniciar/Detener escaneo<br/>
         • <font color="#2979FF">?</font>: Ayuda (este diálogo)<br/>
-        • 🐛: Modo debug (datos simulados)<br/>
         • ⚙: Filtros de búsqueda<br/><br/>
+
+        <b>Funciones del menú:</b><br/>
+        • 👤 Dispositivos Conocidos: marca tu router, teléfono u otros equipos de confianza para que dejen de marcarse como riesgo<br/>
+        • 🕘 Historial: consulta y compara escaneos anteriores<br/>
+        • 🛡 Informe de Seguridad: análisis bajo demanda de APs falsos, amenazas Bluetooth y aleatorización de MAC<br/><br/>
 
         <b>Privacidad:</b><br/>
         Esta aplicación requiere permisos de ubicación y Bluetooth para funcionar. No se envía información a servidores externos.
@@ -110,8 +112,6 @@
     <string name="permission_required">Permiso de ubicación necesario para escanear WiFi</string>
     <string name="scanning">Escaneando dispositivos cercanos…</string>
     <string name="devices_detected">Dispositivos Detectados</string>
-    <string name="debug_mode_enabled">Modo DEBUG activado - Datos simulados</string>
-    <string name="real_mode_enabled">Modo REAL activado</string>
     <string name="filters_applied">Filtros aplicados</string>
 
     <!-- Diálogo de Guardar Resultados -->

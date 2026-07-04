@@ -316,6 +316,19 @@
                 android:lineSpacingExtra="2dp"/>
         </LinearLayout>
 
+        <!-- Mark as known device -->
+        <Button
+            android:id="@+id/detailMarkKnownButton"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="⭐ Mark as Known Device"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:backgroundTint="#2E1A3E"
+            android:fontFamily="monospace"
+            android:layout_marginTop="16dp"/>
+
         <!-- Close button -->
         <Button
             android:id="@+id/detailCloseButton"
@@ -327,7 +340,7 @@
             android:textSize="16sp"
             android:backgroundTint="#00FF41"
             android:fontFamily="monospace"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="8dp"/>
     </LinearLayout>
     </ScrollView>
 </androidx.cardview.widget.CardView>

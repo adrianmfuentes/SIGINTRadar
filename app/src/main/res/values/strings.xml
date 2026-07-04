@@ -22,7 +22,6 @@
     <string name="scan_description">Start or stop scanning</string>
     <string name="help_button">Help</string>
     <string name="help_description">Help</string>
-    <string name="debug_mode">Debug mode</string>
     <string name="filters">Filters</string>
     <string name="filters_description">Filters</string>
     <string name="close_button">CLOSE</string>
@@ -33,7 +32,6 @@
     <!-- Icons -->
     <string name="help_icon">\?</string>
     <string name="settings_icon">⚙</string>
-    <string name="debug_icon">🐛</string>
 
     <!-- Risk Levels -->
     <string name="risk_critical">CRITICAL</string>
@@ -98,8 +96,12 @@
         <b>Buttons:</b><br/>
         • <font color="#00E676">Green</font>: Start/Stop scanning<br/>
         • <font color="#2979FF">?</font>: Help (this dialog)<br/>
-        • 🐛: Debug mode (simulated data)<br/>
         • ⚙: Search filters<br/><br/>
+
+        <b>Menu features:</b><br/>
+        • 👤 Known Devices: label your router, phone, or other trusted gear so it stops being flagged<br/>
+        • 🕘 Scan History: browse and compare past scans<br/>
+        • 🛡 Security Report: on-demand deep scan for rogue APs, BT threats, and MAC randomization<br/><br/>
 
         <b>Privacy:</b><br/>
         This app requires location and Bluetooth permissions to function. No information is sent to external servers.
@@ -110,8 +112,6 @@
     <string name="permission_required">Location permission required for WiFi scanning</string>
     <string name="scanning">Scanning nearby devices…</string>
     <string name="devices_detected">Devices Detected</string>
-    <string name="debug_mode_enabled">DEBUG mode activated - Simulated data</string>
-    <string name="real_mode_enabled">REAL mode activated</string>
     <string name="filters_applied">Filters applied</string>
 
     <!-- Save Results Dialog -->

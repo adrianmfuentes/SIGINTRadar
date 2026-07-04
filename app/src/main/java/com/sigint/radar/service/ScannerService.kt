@@ -8,7 +8,6 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.sigint.radar.MainActivity
-import com.sigint.radar.MockDataProvider
 import com.sigint.radar.R
 import com.sigint.radar.model.DetectedDevice
 import com.sigint.radar.scanner.BluetoothScanner
@@ -18,22 +17,41 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.compareTo
-import kotlin.text.set
+
+data class ScannerStatus(
+    val wifiThrottled: Boolean = false,
+    val bluetoothEnabled: Boolean = true
+)
 
 class ScannerService : LifecycleService() {
     private val binder = LocalBinder()
     private lateinit var wifiScanner: WifiScanner
     private lateinit var bluetoothScanner: BluetoothScanner
-    private var debugMode = false
     private val _devicesFlow = MutableStateFlow<List<DetectedDevice>>(emptyList())
     val devicesFlow: StateFlow<List<DetectedDevice>> = _devicesFlow.asStateFlow()
+    private val _statusFlow = MutableStateFlow(ScannerStatus())
+    val statusFlow: StateFlow<ScannerStatus> = _statusFlow.asStateFlow()
     private val allDevices = mutableMapOf<String, DetectedDevice>()
 
     companion object {
         private const val NOTIFICATION_ID = 1001
         private const val CHANNEL_ID = "sigint_scanner"
-        private const val SCAN_INTERVAL_MS = 2000L
+
+        // UI/pruning tick - keeps the radar and stale-device cleanup responsive.
+        private const val TICK_INTERVAL_MS = 2000L
+
+        // Android throttles WifiManager.startScan() to ~4 calls per 2-minute window
+        // (API 28+). Calling it every tick guarantees throttling within seconds, after
+        // which every "scan" silently returns stale cached results. Scanning every 15
+        // ticks (~30s) stays comfortably under the limit so results are actually fresh.
+        private const val WIFI_SCAN_EVERY_TICKS = 15
+
+        // BLE scanning isn't throttled the same way; keep it more frequent.
+        private const val BLUETOOTH_SCAN_EVERY_TICKS = 3
+
+        // Devices must survive a couple of scan cycles of either radio before being
+        // dropped, otherwise they'd be pruned before the next WiFi scan even runs.
+        private const val DEVICE_EXPIRY_MS = 75_000L
     }
 
     inner class LocalBinder : Binder() {
@@ -52,12 +70,7 @@ class ScannerService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-
-        // Recibir modo debug del intent
-        debugMode = intent?.getBooleanExtra("DEBUG_MODE", false) ?: false
-
         startContinuousScanning()
-
         return START_STICKY
     }
 
@@ -99,39 +112,33 @@ class ScannerService : LifecycleService() {
 
     private fun startContinuousScanning() {
         lifecycleScope.launch {
-            var scanCount = 0
+            var tick = 0
             while (true) {
-                if (debugMode) {
-                    val mockDevices = MockDataProvider.getMockDevices()
-                    mockDevices.forEach { device ->
-                        allDevices[device.address] = device
-                    }
-                } else {
-                    // Siempre escanear WiFi
+                if (tick % WIFI_SCAN_EVERY_TICKS == 0) {
                     val wifiDevices = wifiScanner.scan()
-                    wifiDevices.forEach { device ->
-                        allDevices[device.address] = device
-                    }
-
-                    // Escanear Bluetooth solo cada 3 ciclos (cada 6 segundos)
-                    if (scanCount % 3 == 0) {
-                        val bleDevices = bluetoothScanner.scan()
-                        bleDevices.forEach { device ->
-                            allDevices[device.address] = device
-                        }
-                    }
+                    wifiDevices.forEach { device -> allDevices[device.address] = device }
                 }
+
+                if (tick % BLUETOOTH_SCAN_EVERY_TICKS == 0) {
+                    val bleDevices = bluetoothScanner.scan()
+                    bleDevices.forEach { device -> allDevices[device.address] = device }
+                }
+
+                _statusFlow.value = ScannerStatus(
+                    wifiThrottled = wifiScanner.lastScanThrottled,
+                    bluetoothEnabled = bluetoothScanner.isBluetoothEnabled()
+                )
 
                 val now = System.currentTimeMillis()
                 allDevices.entries.removeIf { (_, device) ->
-                    now - device.timestamp > 30_000
+                    now - device.timestamp > DEVICE_EXPIRY_MS
                 }
 
                 _devicesFlow.value = allDevices.values.toList()
                 updateNotification(allDevices.size)
 
-                scanCount++
-                delay(SCAN_INTERVAL_MS)
+                tick++
+                delay(TICK_INTERVAL_MS)
             }
         }
     }

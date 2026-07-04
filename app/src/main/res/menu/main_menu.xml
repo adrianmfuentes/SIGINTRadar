@@ -21,8 +21,24 @@
         android:icon="@android:drawable/ic_menu_share"/>
 
     <item
-        android:id="@+id/menu_debug"
-        android:title="⚡ Debug Mode"
-        android:icon="@android:drawable/ic_menu_edit"/>
+        android:id="@+id/menu_known_devices"
+        android:title="👤 Known Devices"
+        android:icon="@android:drawable/ic_menu_myplaces"/>
+
+    <item
+        android:id="@+id/menu_history"
+        android:title="🕘 Scan History"
+        android:icon="@android:drawable/ic_menu_recent_history"/>
+
+    <item
+        android:id="@+id/menu_security_report"
+        android:title="🛡 Security Report"
+        android:icon="@android:drawable/ic_lock_idle_alarm"/>
+
+    <item
+        android:id="@+id/menu_background_scan"
+        android:title="🌙 Background Scan"
+        android:checkable="true"
+        android:icon="@android:drawable/ic_popup_sync"/>
 </menu>
 

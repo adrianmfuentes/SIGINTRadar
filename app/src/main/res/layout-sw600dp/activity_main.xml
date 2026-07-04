@@ -104,41 +104,41 @@
                     android:layout_marginTop="4dp">
 
                     <TextView
-                        android:id="@+id/criticalText"
+                        android:id="@+id/criticalCountText"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="C: 0"
+                        android:text="0"
                         android:textColor="#FF0000"
                         android:textSize="12sp"
                         android:fontFamily="monospace"/>
 
                     <TextView
-                        android:id="@+id/highText"
+                        android:id="@+id/highCountText"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="H: 0"
+                        android:text="0"
                         android:textColor="#FF6600"
                         android:textSize="12sp"
                         android:fontFamily="monospace"/>
 
                     <TextView
-                        android:id="@+id/mediumText"
+                        android:id="@+id/mediumCountText"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="M: 0"
+                        android:text="0"
                         android:textColor="#FFAA00"
                         android:textSize="12sp"
                         android:fontFamily="monospace"/>
 
                     <TextView
-                        android:id="@+id/lowText"
+                        android:id="@+id/lowCountText"
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="L: 0"
+                        android:text="0"
                         android:textColor="#00FF00"
                         android:textSize="12sp"
                         android:fontFamily="monospace"/>
@@ -172,6 +172,17 @@
                 android:textSize="12sp"
                 android:fontFamily="monospace"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/scanStatusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFAA00"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            tools:text="⏳ WiFi scan throttled by Android - showing cached results"/>
     </LinearLayout>
 
     <!-- Guideline vertical para dividir radar y lista -->
