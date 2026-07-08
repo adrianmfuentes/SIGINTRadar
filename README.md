@@ -19,7 +19,7 @@
 
 **SIGINT Radar** is a powerful open-source Android application designed for security professionals, network administrators, and privacy-conscious users. It provides real-time scanning and analysis of WiFi and Bluetooth Low Energy (BLE) devices in your vicinity, with advanced threat detection capabilities.
 
-### 🎯 Key Highlights
+### Key Highlights
 
 - **Real-time Scanning**: Continuous monitoring of WiFi networks and Bluetooth devices
 - **Advanced Threat Detection**: Identifies Evil Twin attacks, Deauth patterns, Karma/Jasager attacks, and more
@@ -30,9 +30,9 @@
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔍 Detection Capabilities
+### Detection Capabilities
 
 #### WiFi Security Analysis
 - **Evil Twin Detection**: Identifies rogue access points mimicking legitimate networks
@@ -48,7 +48,7 @@
 - **MAC Randomization Detection**: Spots devices using privacy features
 - **Service UUID Analysis**: Examines advertised Bluetooth services
 
-### 📊 Analytics & Visualization
+### Analytics & Visualization
 
 #### Interactive Radar View
 - **Military-Style Display**: 360° radar with distance rings (0-50m)
@@ -77,7 +77,7 @@
 - **Known Devices**: Whitelist/blacklist management with trust levels
 - **Pattern Storage**: Device co-occurrence and relationship tracking
 
-### 🎨 User Interface
+### User Interface
 
 #### Responsive Design
 - **Adaptive Layouts**: Optimized for phones, phablets, and tablets
@@ -149,7 +149,7 @@ install.bat
 
 ---
 
-## 📖 Usage
+## Usage
 
 ### First Launch
 
@@ -309,14 +309,14 @@ app/src/main/java/com/sigint/radar/
 
 | Permission | Purpose | Required |
 |------------|---------|----------|
-| `ACCESS_FINE_LOCATION` | WiFi scanning (Android requirement) | ✅ Yes |
-| `ACCESS_COARSE_LOCATION` | General location context | ✅ Yes |
-| `BLUETOOTH_SCAN` | BLE device scanning (Android 12+) | ✅ Yes |
-| `BLUETOOTH_CONNECT` | BLE device information | ✅ Yes |
-| `ACCESS_WIFI_STATE` | WiFi adapter state | ✅ Yes |
-| `CHANGE_WIFI_STATE` | Trigger WiFi scans | ✅ Yes |
-| `FOREGROUND_SERVICE` | Background scanning | ✅ Yes |
-| `POST_NOTIFICATIONS` | Scan notifications | ⚠️ Optional |
+| `ACCESS_FINE_LOCATION` | WiFi scanning (Android requirement) | Yes      |
+| `ACCESS_COARSE_LOCATION` | General location context | Yes      |
+| `BLUETOOTH_SCAN` | BLE device scanning (Android 12+) | Yes      |
+| `BLUETOOTH_CONNECT` | BLE device information | Yes      |
+| `ACCESS_WIFI_STATE` | WiFi adapter state | Yes      |
+| `CHANGE_WIFI_STATE` | Trigger WiFi scans | Yes      |
+| `FOREGROUND_SERVICE` | Background scanning | Yes      |
+| `POST_NOTIFICATIONS` | Scan notifications | Optional |
 
 ### Best Practices
 - Use in controlled environments only
@@ -370,7 +370,7 @@ app/src/main/java/com/sigint/radar/
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 ### API Documentation
 - [MainActivity.kt](docs/api/MainActivity.md) - Main activity reference
@@ -389,7 +389,7 @@ app/src/main/java/com/sigint/radar/
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these guidelines:
 
@@ -400,15 +400,15 @@ Contributions are welcome! Please follow these guidelines:
 5. **Open Pull Request**
 
 ### Contribution Areas
-- 🐛 Bug fixes
-- ✨ New features
-- 📝 Documentation improvements
-- 🌍 Translations
-- 🎨 UI/UX enhancements
+- Bug fixes
+- New features
+- Documentation improvements
+- Translations
+- UI/UX enhancements
 
 ---
 
-## 🐛 Known Issues
+## Known Issues
 
 ### Android Limitations
 - **Background Scanning**: Limited on Android 9+ due to OS restrictions
@@ -423,10 +423,10 @@ Contributions are welcome! Please follow these guidelines:
 
 ---
 
-## 📝 Changelog
+## Changelog
 
 ### Version 1.0.0 (2026-01-05)
-- 🎉 Initial release
+- Initial release
 - ✅ WiFi & BLE scanning
 - ✅ Radar visualization with heat map
 - ✅ Advanced threat detection (Evil Twin, Deauth, Karma/Jasager)
@@ -438,7 +438,7 @@ Contributions are welcome! Please follow these guidelines:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
@@ -463,7 +463,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 ```
 ---
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 **SIGINT Radar is for educational and authorized security testing purposes only.**
 
@@ -473,12 +473,6 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 - This tool should not be used for illegal surveillance or unauthorized access
 
 **Always obtain proper authorization before security testing.**
-
----
-
-## 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=adrianmfuentes/SIGINTRadar&type=Date)](https://star-history.com/adrianmfuentes/SIGINTRadar&Date)
 
 ---
 
